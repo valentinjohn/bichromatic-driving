@@ -13,24 +13,25 @@ import pickle
 import sys
 import os
 from utils.notebook_tools import get_data_from
+from scipy.constants import physical_constants
 
 fig_size_single = 3.37
 fig_size_double = 6.69
 
-muB=57.883818060*0.241799050402293  #Bohr magneton in GHz 
+muB=physical_constants['Bohr magneton in Hz/T'][0] / 1e9  #Bohr magneton in GHz 
 B=0.675                             #magnetic field in Tesla 
-g10=0.17439208                      #g-factor 
-c1=-0.00104254                        
-d=-0.01145871
-a=0.03582596
-g20=0.27062489
-c2=-0.00142594
-aU=a*10**(-3)
-beta=1.231-0.446
-t_avg=13.3721499
-O_avg=7.584879
-U=2559.3078425900085
-alpha=U*a*10**(-3)
+g10=0.17439208                      #g-factor of qubit 1 
+c1=-0.00104254      #g-factor modulation, a1-b1, 1/mV                   
+d=-0.01145871       #\frac{\Omega^2-t^2}{U} term in GHz 
+a=0.03582596        #ratio of the lever-arm and the charging energy, 1/meV 
+g20=0.27062489      #g-factor of qubit 2
+c2=-0.00142594      #g-factor modulation term 
+aU=a*10**(-3)       #ratio of the lever-arm and the charging energy, 1/ueV
+beta=1.231-0.446     #virtual plunger matrix elements of P2
+t_avg=13.3721499     #average t hopping parameter in ueV 
+O_avg=7.584879       #average \Omega hopping parameter in ueV
+U=2559.3078425900085 #Charging energy in ueV 
+alpha=U*a*10**(-3)   #lever-arm 
 
 def get_fq1(VP1):   #this function calculates the frequency of qubit 1 at different detunings (VP2=-VP1)
 
