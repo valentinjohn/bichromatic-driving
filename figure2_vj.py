@@ -148,11 +148,12 @@ ax1.plot(fp4_q1_dif, q1_dif_up, lw=1, ls=linestyles[2],
 
 # *****************************************************************************
 
-Q1 = 1.514  # transition frequencies
-Q1b = 1.570
-Q2 = 2.655
-Q2b = 2.714
+Q1 = fq1
+Q1b = fq1_
+Q2 = fq2
+Q2b = fq2_
 
+# First entry: plunger
 mono(2, Q1, ax2)  # plotting the monochromatic transitions
 mono(2, Q2, ax2)
 mono(2, Q1+Q2b, ax2)
@@ -161,6 +162,9 @@ mono(4, Q1, ax2)
 mono(4, Q2, ax2)
 mono(4, Q1+Q2b, ax2)
 
+# First entry: plunger P2 factor
+# First entry: plunger P4 factor
+# Third entry: 1 -> fq1, 2 -> fq2, 3 -> fq1+fq2_
 bichro(1, 1, 1, ax2)  # plotting the bichromatic transitions
 bichro(1, 1, 2, ax2)
 bichro(1, 1, 3, ax2)
@@ -177,14 +181,16 @@ bichro(1, -1, 3, ax2)
 # monochromatic transitions, C2*P2+C4*P4=Q_i, driven by P4 or P2
 mon4 = [[0, 1, 1], [0, 1, 2], [0, 1, 3]]
 mon2 = [[1, 0, 1], [1, 0, 2], [1, 0, 3]]
-
-bikro = [[1, 1, 1], [1, 1, 2], [1, 1, 3], [1, -1, 1], [1, -1, 2], [1, -1, 3],
-         [-1, 1, 1], [-1, 1, 2], [-1, 1, 3]]  # similar to the monochromatic transitions
+# similar to the monochromatic transitions
+bikro = [[1, 1, 1], [1, 1, 2], [1, 1, 3],
+         [1, -1, 1], [1, -1, 2], [1, -1, 3],
+         [-1, 1, 1], [-1, 1, 2], [-1, 1, 3]]
 
 # bichromatic, when the sum of the frequencies is resonant
 bichro_sum = [[1, 1, 1], [1, 1, 2], [1, 1, 3]]
-bichro_diff = [[1, -1, 1], [1, -1, 2], [1, -1, 3], [-1, 1, 1], [-1,
-                                                                1, 2], [-1, 1, 3]]  # bichromatic, when the difference is resonant
+# bichromatic, when the difference is resonant
+bichro_diff = [[1, -1, 1], [1, -1, 2], [1, -1, 3],
+               [-1, 1, 1], [-1, 1, 2], [-1, 1, 3]]
 
 # circles around the analysed anticrossings
 
@@ -313,15 +319,16 @@ m = 18*2/3  # markersize
 for i in trikro:  # we plot all of the trichromatic transitions
     trichro(i, ax3)
 
-bikro = [[1, 1, 1], [1, 1, 2], [1, 1, 3], [1, -1, 1], [1, -1, 2], [1, -1, 3],
-         [-1, 1, 1], [-1, 1, 2], [-1, 1, 3]]  # similar to the monochromatic transitions
+bikro = [[1, 1, 1], [1, 1, 2], [1, 1, 3],
+         [1, -1, 1], [1, -1, 2], [1, -1, 3],
+         [-1, 1, 1], [-1, 1, 2], [-1, 1, 3]]
 
 # there are six different kind of resonance lines
 
 # bichromatic, when the sum of the frequencies is resonant
 bichro_sum = [[1, 1, 1], [1, 1, 2], [1, 1, 3]]
-bichro_diff = [[1, -1, 1], [1, -1, 2], [1, -1, 3], [-1, 1, 1], [-1,
-                                                                1, 2], [-1, 1, 3]]  # bichromatic, when the difference is resonant
+bichro_diff = [[1, -1, 1], [1, -1, 2], [1, -1, 3],
+               [-1, 1, 1], [-1, 1, 2], [-1, 1, 3]]  # bichromatic, when the difference is resonant
 trichro_big = [[1, -2, 2], [1, -2, 1], [-1, 2, 1], [-1, 2, 2],
                [-1, 2, 3]]  # trichromatic transitions with a slope of 2
 trichro_small = [[2, -1, 3], [2, -1, 2], [2, -1, 1], [-2, 1, 1],
@@ -329,11 +336,10 @@ trichro_small = [[2, -1, 3], [2, -1, 2], [2, -1, 1], [-2, 1, 1],
 trichro_neg1 = [[1, 2, 3]]  # trichromatic transitions with a slope of -2
 trichro_neg2 = [[2, 1, 3]]  # trichromatic transitions with a slope of -1/2
 
-# lines=[bichro_sum,bichro_diff,trichro_big,trichro_small,trichro_neg1,trichro_neg2]  #all groups of transitions in a single list
 # when we are interested only in the intersection of bicchromatic 2photon with bichro 3photon
 lines = [bikro, trikro]
 
-# numbers=[0,1,2,3,4,5]                #using these numbers we generate all possible pairs of transition groups to intersect
+# using these numbers we generate all possible pairs of transition groups to intersect
 numbers = [0, 1]
 pairs = []  # these are in the pairs
 for i in range(len(numbers)):
@@ -349,8 +355,6 @@ for i in pairs:
             x = intersection(j, k)[0]  # calculate intersection points
             y = intersection(j, k)[1]
 
-            # if anti[0]==0:
-            # ax2.scatter(x,y,s=m,marker='x',color='black',zorder=2)  #it is a crossing
             if anti[0] == 1:
                 if anti[1] == 2:
                     if anti[3] == 2:
@@ -423,7 +427,6 @@ ax3.arrow(4.15, 0.55, 0, 0.67,
 ax3.text(1, 0.35, r'$\mathrm{(Q1+Q2\_)^{2P2,P4}}$', fontsize=9*2/3)
 ax3.text(0.35, 1.7, r'$\mathrm{Q2^{P2,P4}}$', fontsize=9*2/3)
 ax3.text(3.7, 1.25, r'$\mathrm{Q2^{-P2,P4}}$', fontsize=9*2/3, rotation=45)
-# ax2.text(3.7,0.87,r'$\mathrm{Q1^{-2P2,P4}}$',fontsize=9*2/3,rotation=26.565)
 ax3.text(3.7, 0.35, r'$\mathrm{Q1^{-2P2,P4}}$', fontsize=9*2/3, rotation=0)
 
 ax2.axis('square')
