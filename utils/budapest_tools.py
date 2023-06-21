@@ -7,14 +7,6 @@ Created on Mon Jun  5 19:39:38 2023
 
 # %% imports
 
-import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.gridspec import GridSpec
-from matplotlib.ticker import FormatStrFormatter
-import pickle
-import sys
-import os
-from utils.notebook_tools import get_data_from
 from scipy.constants import physical_constants
 
 # %% constants
