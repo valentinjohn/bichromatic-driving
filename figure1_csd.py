@@ -8,6 +8,7 @@ Created on Thu Sep 22 15:50:38 2022
 
 # %% Imports
 from utils.settings import *
+from utils.delft_tools import *
 
 # %% Save path
 save_path = get_save_path('Figure1')
@@ -57,31 +58,22 @@ df_pl_inv = pd.DataFrame(np.linalg.pinv(df_pl.values),
 virtual_gates = ['vP1', 'vP2']
 real_gates = ['P1', 'P2', 'P4']
 
-df_pl12 = df_pl.loc[virtual_gates, real_gates].round(3)
-df_pl12_inv = df_pl_inv.loc[real_gates, virtual_gates].round(3)
+df_pl12 = df_pl.loc[virtual_gates, real_gates]  # .round(3)
+df_pl12_inv = df_pl_inv.loc[real_gates, virtual_gates]  # .round(3)
 
-# %% Real axes in vP1-vP2 space
+# %% Virtual plungers definitions
 
-P1_axis_orth = np.array(
-    [1, - df_pl12_inv.loc['P1']['vP1'] / df_pl12_inv.loc['P1']['vP2']])
-P1_axis_orth /= np.linalg.norm(P1_axis_orth)
 
-P1_axis = np.array([1, -P1_axis_orth[0]/P1_axis_orth[1]])
-P1_axis /= np.linalg.norm(P1_axis)
+def vP1(P2, P4):
+    return df_pl12.loc['vP1']['P2']*P2 + df_pl12.loc['vP1']['P4']*P4
 
-P2_axis_orth = np.array(
-    [1, - df_pl12_inv.loc['P2']['vP1'] / df_pl12_inv.loc['P2']['vP2']])
-P2_axis_orth /= np.linalg.norm(P2_axis_orth)
 
-P2_axis = np.array([1, -P2_axis_orth[0]/P2_axis_orth[1]])
-P2_axis /= np.linalg.norm(P2_axis)
+def vP2(P2, P4):
+    return df_pl12.loc['vP2']['P2']*P2 + df_pl12.loc['vP2']['P4']*P4
 
-P4_axis_orth = np.array(
-    [1, - df_pl12_inv.loc['P4']['vP1'] / df_pl12_inv.loc['P4']['vP2']])
-P4_axis_orth /= np.linalg.norm(P4_axis_orth)
 
-P4_axis = np.array([1, -P4_axis_orth[0]/P4_axis_orth[1]])
-P4_axis /= np.linalg.norm(P4_axis)
+A_P4 = 2.8*5
+A_P2 = 1.9*5
 
 # %% Plotting
 
@@ -94,24 +86,20 @@ plt.pcolor(P1, P2, charge_sensor, shading='auto')  # , cmap='hot')
 # ******************************************************************************
 # P2 and P4 axis plot
 offset = [-10, 10]
-mw_amp = 5
 
-plt.plot([offset[0]-50*P2_axis[0], offset[0]+50*P2_axis[0]],
-         [offset[1]-50*P2_axis[1], offset[1]+50*P2_axis[1]],
-         ls='--', c='black', zorder=1, lw=1, label='P2')
-plt.plot([offset[0]-50*P4_axis[0], offset[0]+50*P4_axis[0]],
-         [offset[1]-50*P4_axis[1], offset[1]+50*P4_axis[1]],
-         ls=':', c='black', zorder=1, lw=1, label='P4')
+plt.quiver(-10, 10, vP1(A_P2, 0), vP2(A_P2, 0),
+           angles='xy', scale_units='xy', scale=1, headwidth=8,
+           label='P2 axis', color='purple')
+plt.quiver(-10, 10, -vP1(A_P2, 0), -vP2(A_P2, 0),
+           angles='xy', scale_units='xy', scale=1, headwidth=8,
+           color='purple')
 
-plt.quiver(-10, 10, mw_amp*P2_axis[0], mw_amp*P2_axis[1],
-           color=['r'], angles='xy', scale_units='xy', scale=1, headwidth=8)
-plt.quiver(-10, 10, -mw_amp*P2_axis[0], -mw_amp*P2_axis[1],
-           color=['r'], angles='xy', scale_units='xy', scale=1, headwidth=8)
-
-plt.quiver(-10, 10, mw_amp*P4_axis[0], mw_amp*P4_axis[1],
-           color=['r'], angles='xy', scale_units='xy', scale=1, headwidth=8)
-plt.quiver(-10, 10, -mw_amp*P4_axis[0], -mw_amp*P4_axis[1],
-           color=['r'], angles='xy', scale_units='xy', scale=1, headwidth=8)
+plt.quiver(-10, 10, vP1(0, A_P4), vP2(0, A_P4),
+           angles='xy', scale_units='xy', scale=1, headwidth=8,
+           label='P4 axis', color='red')
+plt.quiver(-10, 10, -vP1(0, A_P4), -vP2(0, A_P4),
+           angles='xy', scale_units='xy', scale=1, headwidth=8,
+           color='red')
 
 # ******************************************************************************
 # detuning axis plot
