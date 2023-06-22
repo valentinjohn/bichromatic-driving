@@ -72,27 +72,27 @@ att_cor = slope*(xdata_cryo-1)
 ydata_cryo_dBm_cor = ydata_cryo_dBm + att_cor
 popt_cor, pcov_cor = curve_fit(att, xdata_cryo, ydata_cryo_dBm_cor)
 
-ax.plot(xdata_cryo, ydata_cryo_dBm, label='cryo: measured')
+# ax.plot(xdata_cryo, ydata_cryo_dBm, label='cryo: measured')
 ax.plot(xdata_cryo, ydata_cryo_dBm_cor, label='data',
         marker='.', ls=None, markersize=0.1)
-# plt.plot(xdata_cryo, att(xdata_cryo, *popt), label=f'cryo: slope = {np.round(popt[0],2)} dB/GHz, offset = {np.round(popt[1],2)} dB')
-ax.plot(xdata_cryo, att(xdata_cryo, *popt_cor), label=f'{np.round(popt_cor[0],2)} dB/GHz',
-        lw=0.9)  # = {np.round(popt_cor[0],2)} dB/GHz
+
+ax.plot(xdata_cryo, att(xdata_cryo, *popt_cor),
+        label=f'{np.round(popt_cor[0],2)} dB/GHz',
+        lw=0.9)
 
 ax.set_xlabel('f (GHz)')
-ax.set_ylabel('P (dBm)')
-# ax.title('Attenuation of fridge lines in Vaughan fridge')
+ax.set_ylabel('P (dB)')
 ax.legend()
+plt.title('Fridge lines with cryo attenuators')
 plt.tight_layout()
 plt.show()
 
 
 # %% diplexer
 
-
 lw = 1
 
-fig, ax3 = plt.subplots(1, 1, figsize=(fig_size_single, 1.5))
+fig, ax3 = plt.subplots(1, 1, figsize=(fig_size_single, 2))
 
 f_span = 0.3
 
@@ -115,12 +115,12 @@ ax3.plot(freq, P_att_cryo,
          lw=0.9)  # = {np.round(popt_cor[0],2)} dB/GHz
 
 ax3.set_xlabel('f (GHz)')
-ax3.set_ylabel('P (dBm)')
+ax3.set_ylabel('P (dB)')
 ax3.set_ylim(-40, 0)
 # ax3.set_xlim(0.6, 5)
 
+plt.title('Diplexer')
 plt.tight_layout()
-# ax3.legend(bbox_to_anchor=(0.3, 1.3))
 plt.savefig(save_path+'\\figureS7.png', dpi=300)
 plt.legend()
 plt.show()
@@ -159,41 +159,23 @@ resampled_power2 = np.interp(
 combined_power = resampled_power1 + resampled_power2
 
 
-# %%
+# %% Plotting combined datasets
 lw = 1
 
-fig, ax3 = plt.subplots(1, 1, figsize=(fig_size_single, 1.5))
-
-f_span = 0.3
-
-
-# ax3.plot(df_dip['TR1.FREQ.MHZ']/1e3,
-#           df_dip['TR1.TRANSMISSION (2-PORT).DB'],
-#           label='diplexer', lw=lw)
-
-# cryo_max = df_wod_cryo['TR1.TRANSMISSION (2-PORT).DB'].max()
-# ax3.plot(df_wod_cryo['TR1.FREQ.MHZ']/1e3,
-#           df_wod_cryo['TR1.TRANSMISSION (2-PORT).DB'] - cryo_max,
-#           label='fridge lines at $T_{cryo}$', lw=lw)
+fig, ax3 = plt.subplots(1, 1, figsize=(fig_size_single, 2))
 
 ax3.plot(resampled_freq/1e3,
          combined_power,
          label=r'$P_{att,meas}$', lw=lw)
 
 offset = -20
-# ax3.plot(resampled_freq/1e3, offset*np.ones(673), ls='--', lw=lw,
-#          label='118 dB/GHz')
 
 hpf = -2.45*resampled_freq/1e3
 hpf[hpf > 0] = 0
-# ax3.plot(resampled_freq/1e3, hpf, ls='--', lw=lw,
-#          label='-2.45 dB/GHz')
 
 fcut_lpf = 1.02
 lpf = 118*(resampled_freq/1e3 - fcut_lpf)
 lpf[lpf > 0] = 0
-# ax3.plot(resampled_freq/1e3, lpf, ls='--', lw=lw,
-#          label='118 dB/GHz')
 
 att_tot = hpf+lpf+offset
 ax3.plot(resampled_freq/1e3, att_tot, ls='--', lw=lw,
@@ -204,13 +186,13 @@ ax3.set_ylabel(r'$P_{att}$ (dB)')
 ax3.set_ylim(-65, -15)
 ax3.set_xlim(0.6, 5)
 
+plt.title('Diplexer with cryo fridge lines')
 plt.tight_layout()
-# ax3.legend(bbox_to_anchor=(0.3, 1.3))
 plt.legend()
 plt.savefig(save_path+'\\figureS7.png', dpi=300)
 plt.show()
 
-# %% Total attenuation
+# %% Total attenuation (now including RT attenuation and P_siggen)
 
 fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(fig_size_single, 2.5))
 
@@ -258,30 +240,22 @@ plt.savefig(save_path+'\\figureS7_fridge_lines_cryo.pdf', dpi=300)
 
 plt.show()
 
-# %%
-# def power_with_parabola(freq, a, b, c):
-#     fit_function = (dBm2V_conversion(power(freq, plunger='P4',
-#                                            P_siggen=2.5))*1e3
-#                     + parabola(freq, a, b, c))
-#     return fit_function
+# %% Plotting difference between data and fit
 
 fig, ax3 = plt.subplots(1, 1, figsize=(fig_size_single, 1.5))
 dif_dat_fit = ydata2_mV - dBm2V_conversion(power(xdata, plunger='P4',
                                                  P_siggen=2.5, slope_cryo=-3))*1e3
 ax3.plot(xdata[:-2], dif_dat_fit[:-2], label='dif',
          marker='.', ls=None, markersize=0.1)
-# ax3.plot(xdata, dBm2V_conversion(power(xdata, plunger='P4',
-#                                         P_siggen=2.5, slope_cryo=-3))*1e3,
-#           label='fit', ls='--', lw='1', marker='.', markersize=0.1)
 
+
+ax3.set_xlabel('f (GHz)')
+ax3.set_ylabel(r'$\Delta A_{RMS}$ (mV)')
+plt.title('Difference between attenuation data and fit')
+plt.tight_layout()
 plt.show()
-# popt, pcov = curve_fit(power_with_parabola, xdata[:-2], ydata2_mV[:-2])
-# plt.plot(xdata, power_with_parabola(xdata, *popt), 'r-',
-#          label='fit: a=%5.3f, b=%5.3f, c=%5.3f' % tuple(popt))
 
-
-# %% power when driving
-
+# %% power when driving (according to fit)
 
 pwr_q1_p4 = power(fq1, plunger='P4', P_siggen=2.5)
 pwr_q1__p4 = power(fq1_, plunger='P4', P_siggen=2.5)
