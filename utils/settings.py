@@ -26,8 +26,8 @@ from utils.notebook_tools import Rabi, Gauss, plot_sequence, get_mw_prop
 
 # %% defining style
 
-fig_size_single = 3.37
-fig_size_double = 6.69
+fig_size_single = 3+3/8
+fig_size_double = 2*(3+3/8)
 
 plt.rcParams.update({'font.size': 8})
 plt.rcParams['font.sans-serif'] = 'Arial'
@@ -40,3 +40,22 @@ plt.rcParams['legend.frameon'] = False
 plt.rcParams['legend.fontsize'] = 'small'
 plt.rcParams['legend.scatterpoints'] = 1
 plt.rcParams['axes.labelpad'] = 4  # -2
+
+# %% color definitions
+
+color_P2 = '#668037'
+color_P4 = '#145972'
+
+color_Q1dif = 'violet'
+color_Q2dif = 'turquoise'
+color_Q2sum = 'lightskyblue'
+
+# %%
+
+
+def unit_style(unit: str,
+               style='()',
+               blank=False):
+    if blank:
+        style = ' ' + style
+    return style[:-1] + unit + style[-1]

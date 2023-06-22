@@ -8,6 +8,7 @@ Created on Mon Jun  5 19:39:38 2023
 # %% imports
 
 from scipy.constants import physical_constants
+import numpy as np
 
 # %% constants
 
@@ -106,15 +107,15 @@ def chi3_AC2_eps(VP1):
     return chi3
 
 
-def plotting(x, ax, VP1):  # this function plots resonance lines
+def plotting(x, ax, VP1, color):  # this function plots resonance lines
     y1 = 2*get_fq1(VP1)*10**9-x
     y2 = get_fq1(VP1)*10**9+get_fq2(VP1)*10**9/2-x
     y3 = get_fq1(VP1)*10**9+get_fq2(VP1)*10**9/2+get_fq1b(VP1)*10**9/2-x
-    ax.plot(x*10**(-6), y1*10**(-9), color='cyan',
+    ax.plot(x*10**(-6), y1*10**(-9), color=color,
             linewidth=0.8, linestyle=(0, (3, 3)))
-    ax.plot(x*10**(-6), y2*10**(-9), color='cyan',
+    ax.plot(x*10**(-6), y2*10**(-9), color=color,
             linewidth=0.8, linestyle=(0, (3, 3)))
-    ax.plot(x*10**(-6), y3*10**(-9), color='cyan',
+    ax.plot(x*10**(-6), y3*10**(-9), color=color,
             linewidth=0.8, linestyle=(0, (3, 3)))
 
 

@@ -9,6 +9,7 @@ Created on Wed Jun 21 08:36:39 2023
 
 import sys
 import os
+import numpy as np
 import matplotlib.pyplot as plt
 from utils.notebook_tools import get_data_from
 import pickle
@@ -83,3 +84,56 @@ def Q_dif(fp4, fq):
 def Q_sum(fp4, fq):
     fp2 = fq - fp4
     return fp2
+
+# %% definitions power considerations
+
+
+def att(f, a, c):
+    return a*f + c
+
+
+def func_lpf(freq, fth=1.02, slope=118, offset=-5):
+    freq = np.array(freq)
+    P = list(slope * (freq[freq < fth] - fth) + offset)
+    P.extend(list(0 * freq[freq > fth] + offset))
+    return P
+
+
+def func_hpf(freq, fth=1.02, slope=118, offset=-5):
+    freq = np.array(freq)
+    P = list(0 * freq[freq < fth] + offset)
+    P.extend(slope * (freq[freq > fth] - fth) + offset)
+    return P
+
+
+def dBm2V_conversion(data_dBm, Z=50):
+    V = (Z/1e3)**0.5 * 10**(np.array(data_dBm)/20)
+    return V
+
+
+def parabola(freq, a, b, c):
+    return a*freq**2 + b*freq + c
+
+
+def power(freq,
+          plunger,
+          P_siggen=0,
+          slope_dipl=118,
+          slope_cryo=-2.5):
+
+    if plunger == 'P2':
+        att_rt = -12
+    elif plunger == 'P4':
+        att_rt = -20
+
+    if not isinstance(freq, list):
+        freq = np.array([freq])
+    else:
+        freq = np.array(freq)
+    att_dipl = np.array(
+        func_lpf(freq, fth=1.02, slope=slope_dipl, offset=-7.5))
+    att_cryo = np.array(func_hpf(freq, fth=0, slope=slope_cryo, offset=-12.2))
+
+    P_dBm = P_siggen + att_rt + att_dipl + att_cryo
+
+    return P_dBm
