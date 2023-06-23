@@ -81,7 +81,8 @@ plt.figure(figsize=(2, 2.7))  # 1.7))
 
 # ******************************************************************************
 # charge stability diagram
-plt.pcolor(P1, P2, charge_sensor, shading='auto')  # , cmap='hot')
+plt.pcolor(P1, P2, charge_sensor, shading='auto',
+           cmap='pink')  # , cmap='hot')
 
 # ******************************************************************************
 # P2 and P4 axis plot
@@ -89,17 +90,17 @@ offset = [-10, 10]
 
 plt.quiver(-10, 10, vP1(A_P2, 0), vP2(A_P2, 0),
            angles='xy', scale_units='xy', scale=1, headwidth=8,
-           label='P2 axis', color='purple')
+           label='P2 axis', color=color_P2)
 plt.quiver(-10, 10, -vP1(A_P2, 0), -vP2(A_P2, 0),
            angles='xy', scale_units='xy', scale=1, headwidth=8,
-           color='purple')
+           color=color_P2)
 
 plt.quiver(-10, 10, vP1(0, A_P4), vP2(0, A_P4),
            angles='xy', scale_units='xy', scale=1, headwidth=8,
-           label='P4 axis', color='red')
+           label='P4 axis', color=color_P4)
 plt.quiver(-10, 10, -vP1(0, A_P4), -vP2(0, A_P4),
            angles='xy', scale_units='xy', scale=1, headwidth=8,
-           color='red')
+           color=color_P4)
 
 # ******************************************************************************
 # detuning axis plot
@@ -113,8 +114,8 @@ plt.scatter([-10], [10], marker='*', color='white', edgecolor='black', linewidth
             zorder=2, label='(-10, 10)', s=70)
 # ******************************************************************************
 
-xlabel = datfile.vP1_set.label + ' [{}]'.format(datfile.vP1_set.unit)
-ylabel = datfile.vP2_set.label + ' [{}]'.format(datfile.vP2_set.unit)
+xlabel = datfile.vP1_set.label + unit_style(datfile.vP1_set.unit, blank=True)
+ylabel = datfile.vP2_set.label + unit_style(datfile.vP2_set.unit, blank=True)
 plt.xlabel(xlabel)
 plt.ylabel(ylabel)
 plt.axis('scaled')

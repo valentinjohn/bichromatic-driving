@@ -6,7 +6,11 @@ Created on Wed Jul 13 08:22:42 2022
 """
 
 # %% Imports
+from matplotlib.colors import ListedColormap
+import matplotlib as mpl
 from utils.settings import *
+from utils.delft_tools import *
+from utils.budapest_tools import *
 
 # %% Save path
 save_path = get_save_path('Figure2')
@@ -77,7 +81,7 @@ q2_sum_up = Q_sum(fp4_q2_sum, fq2+100e-3)
 # %% Plot settings
 
 figure_size = 'small'
-figsize = (1.5*fig_size_single, 5)
+figsize = (1.5*fig_size_single, 4)
 linestyles = ['-', ':', '--', '-.']
 colors = ['lightskyblue', 'purple', 'turquoise']
 vmin = 0
@@ -93,13 +97,15 @@ ax_empty.axis('off')
 
 cm = ax1.pcolor(P4_frequency, P2_frequency, problev, shading='auto',
                 cmap='hot', zorder=1, vmin=vmin, vmax=vmax)
-# cbar = ax1.colorbar(cm, fraction=0.046, pad=0.04)
+# cbar = fig.colorbar(cm, fraction=0.03, shrink=1, pad=0.05, ax=ax_empty, location='right')
+# cbar.set_label(r'$1 - P_{\downdownarrows}$', rotation=0)
 
 ax1.pcolor(P4_frequency2, P2_frequency2, problev2, shading='auto',
            cmap='hot', zorder=1, vmin=vmin, vmax=vmax)
 
-ax1.set_ylabel('$f_{\mathrm{P2}}$ [GHz]')
-# ax1.set_xlabel('$f_{\mathrm{P4}}$ [GHz]')
+ax1.set_ylabel('$f_{\mathrm{P2}}$' +
+               f' {unit_style("GHz")}')
+# ax1.set_xlabel('$f_{\mathrm{P4}}$ unit_style(GHz)')
 
 ax1.set_ylim(bottom=0)
 ax1.set_xlim(left=0)
@@ -153,8 +159,13 @@ Q1b = fq1_
 Q2 = fq2
 Q2b = fq2_
 
-# First entry: plunger
-mono(2, Q1, ax2)  # plotting the monochromatic transitions
+'''
+Plotting the monochromatic transitions
+    First entry: plunger
+    Second entry: frequency
+    Third entry: plotting axis
+'''
+mono(2, Q1, ax2)
 mono(2, Q2, ax2)
 mono(2, Q1+Q2b, ax2)
 
@@ -162,10 +173,16 @@ mono(4, Q1, ax2)
 mono(4, Q2, ax2)
 mono(4, Q1+Q2b, ax2)
 
-# First entry: plunger P2 factor
-# First entry: plunger P4 factor
-# Third entry: 1 -> fq1, 2 -> fq2, 3 -> fq1+fq2_
-bichro(1, 1, 1, ax2)  # plotting the bichromatic transitions
+'''
+Plotting the bichromatic transitions
+    First entry: plunger P2 factor
+    Second entry: plunger P4 factor
+    Third entry: (1 -> fq1,
+                  2 -> fq2,
+                  3 -> fq1+fq2_)
+    Fourth entry: plotting axis
+'''
+bichro(1, 1, 1, ax2)
 bichro(1, 1, 2, ax2)
 bichro(1, 1, 3, ax2)
 
@@ -273,15 +290,21 @@ x = (Qj-C22*Qi/C21)/(C42-C41*C22/C21)
 y = (Qj-C42*x)/C22
 
 
-ax2.set_xlabel(r'$f_{P4}$ [GHz]', fontsize=8)
+ax2.set_xlabel(r'$f_{\mathrm{P4}}$' +
+               f' {unit_style("GHz")}')
+ax2.set_ylabel('$f_{\mathrm{P2}}$' +
+               f' {unit_style("GHz")}')
 
-ax2.text(1.12, 2, r'$\mathrm{Q1^{P4}}$', fontsize=9*2/3)
-ax2.text(0.9, 1.0, r'$\mathrm{Q2^{P2,P4}}$', fontsize=9*2/3, rotation=-45)
-ax2.text(2.25, 2.95, r'$\mathrm{Q2^{P4}}$', fontsize=9*2/3)
-ax2.text(3.0, 1.65, r'$\mathrm{Q1^{-P2,P4}}$', fontsize=9*2/3, rotation=45)
+ax2.text(1.1, 2, r'$\mathrm{Q1^{P4}}$', fontsize=fontsize_text)
+ax2.text(0.85, 0.99, r'$\mathrm{Q2^{P2,P4}}$',
+         fontsize=fontsize_text, rotation=-45)
+ax2.text(2.23, 2.95, r'$\mathrm{Q2^{P4}}$', fontsize=fontsize_text)
+ax2.text(3.0, 1.65, r'$\mathrm{Q1^{-P2,P4}}$',
+         fontsize=fontsize_text, rotation=45)
 
-ax2.text(3.25, 3.25, r'$\mathrm{(Q1+Q2\_)^{P4}}$', fontsize=9*2/3)
-ax2.text(3.45, 0.95, r'$\mathrm{Q2^{-P2,P4}}$', fontsize=9*2/3, rotation=45)
+ax2.text(3.2, 3.25, r'$\mathrm{(Q1+Q2\_)^{P4}}$', fontsize=fontsize_text)
+ax2.text(3.42, 0.92, r'$\mathrm{Q2^{-P2,P4}}$',
+         fontsize=fontsize_text, rotation=45)
 # ax2.arrow(3.3, 1.16, 0.25, -0.08,
 #          head_width = 0.07,
 #          width = 0.01,
@@ -412,7 +435,8 @@ y = intersection([1, -1, 2], [1, -2, 1])[1]
 ax3.scatter(x, y, s=m, marker='x', color='green',
             zorder=2, label='weak anticrossing')
 
-ax3.set_xlabel(r'$f_{P4}$ [GHz]', fontsize=8)
+ax3.set_xlabel(r'$f_{\mathrm{P4}}$' +
+               f' {unit_style("GHz")}', fontsize=8)
 
 ax3.arrow(1.75, 0.5, 0, 0.6,
           head_width=0.07,
@@ -424,10 +448,13 @@ ax3.arrow(4.15, 0.55, 0, 0.67,
           width=0.01,
           ec='black', clip_on=False)
 
-ax3.text(1, 0.35, r'$\mathrm{(Q1+Q2\_)^{2P2,P4}}$', fontsize=9*2/3)
-ax3.text(0.35, 1.7, r'$\mathrm{Q2^{P2,P4}}$', fontsize=9*2/3)
-ax3.text(3.7, 1.25, r'$\mathrm{Q2^{-P2,P4}}$', fontsize=9*2/3, rotation=45)
-ax3.text(3.7, 0.35, r'$\mathrm{Q1^{-2P2,P4}}$', fontsize=9*2/3, rotation=0)
+fontsize_text = 7
+
+# ax3.text(1, 0.35, r'$\mathrm{(Q1+Q2\_)^{2P2,P4}}$', fontsize=fontsize_text)
+# ax3.text(0.35, 1.7, r'$\mathrm{Q2^{P2,P4}}$', fontsize=fontsize_text)
+ax3.text(3.7, 1.25, r'$\mathrm{Q2^{-P2,P4}}$',
+         fontsize=fontsize_text, rotation=45)
+# ax3.text(3.7, 0.35, r'$\mathrm{Q1^{-2P2,P4}}$', fontsize=fontsize_text, rotation=0)
 
 ax2.axis('square')
 ax3.axis('square')
@@ -444,12 +471,12 @@ ax1.tick_params(axis='y', pad=0.5)
 ax2.tick_params(axis='y', pad=0.5)
 ax3.tick_params(axis='y', pad=0.5)
 
-ax2.text(1.6, 1.2, r'$\mathrm{AC_1}$', fontsize=9*2/3)
-ax2.text(2.28, 1.2, r'$\mathrm{AC_2}$', fontsize=9*2/3)
-ax2.text(3.83, 1.6, r'$\mathrm{AC_3}$', fontsize=9*2/3)
+ax2.text(1.65, 1.25, r'$\mathrm{AC1}$', fontsize=fontsize_text)
+ax2.text(2.2, 1.2, r'$\mathrm{AC2}$', fontsize=fontsize_text)
+ax2.text(3.75, 1.6, r'$\mathrm{AC3}$', fontsize=fontsize_text)
 
-ax3.text(0.9, 1.35, r'$\mathrm{AC_4}$', fontsize=9*2/3)
-ax3.text(3.4, 1.2, r'$\mathrm{AC_5}$', fontsize=9*2/3)
+ax3.text(0.9, 1.3, r'$\mathrm{AC4}$', fontsize=fontsize_text)
+ax3.text(3.35, 1.2, r'$\mathrm{AC5}$', fontsize=fontsize_text)
 
 
 # *****************************************************************************
@@ -459,11 +486,58 @@ plt.subplots_adjust(left=0.1,
                     bottom=0.05,
                     right=0.97,
                     top=0.95,
-                    hspace=-0.35,
+                    hspace=-0.1,
                     wspace=0.2)
 plt.savefig(os.path.join(save_path, 'figure2_plots.png'), dpi=300)
 plt.savefig(os.path.join(save_path, 'figure2_plots.pdf'), dpi=300)
 plt.show()
+
+# %% create colorbar
+
+# Create a separate figure for the colorbar
+# Adjust the figsize as per your requirements
+fig_colorbar = plt.figure(figsize=(0.1, 1.2))
+ax_colorbar = fig_colorbar.add_subplot(111)
+
+# Define the colorbar properties
+cbar = plt.colorbar(cm, cax=ax_colorbar, orientation='vertical', shrink=0.05)
+cbar.ax.set_ylabel(r'$1 - P_{\downdownarrows}$')  # Set the desired label
+
+# Show the colorplot and the colorbar
+# plt.tight_layout()
+plt.savefig(os.path.join(save_path, 'figure2_cbar.pdf'),
+            dpi=300, transparent=True)
+plt.show()
+
+# %%
+
+
+# define custom colorbars
+# Blues = mpl.cm.get_cmap('Blues', 256)
+# New_Blues = ListedColormap(Blues(np.linspace(0.0, 0.90, int(256*0.90))))
+# Reds = mpl.cm.get_cmap('Reds', 256)
+# New_Reds = ListedColormap(Reds(np.linspace(0.0, 0.90, int(256*0.90))))
+
+fig, ax = plt.subplots(figsize=cm2inch(2.0, 1.6), nrows=1)
+
+gradient = np.linspace(0, 1, 256)
+gradient = np.vstack((gradient, gradient))
+ax.imshow(gradient, aspect='auto', cmap=cm.cmap)
+pos = list(ax.get_position().bounds)
+ax.set_yticks([])
+ax.set_xticks([0, 256])
+ax.set_xlabel(r'$1 - P_{\downdownarrows}$')
+ax.tick_params(top=True, labeltop=True, bottom=False, labelbottom=False)
+ax.set_xticklabels([vmin, vmax])
+ax.xaxis.set_label_position('top')
+
+# ax.set_xticklabels([])
+# ax.set_xticks([])
+plt.tight_layout()
+plt.savefig(os.path.join(save_path, 'figure2_cbar.pdf'),
+            dpi=300, transparent=True)
+plt.show()
+
 
 # %% Plotting Rabi drives in seperate plot
 
