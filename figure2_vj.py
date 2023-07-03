@@ -295,8 +295,12 @@ ax2.set_xlabel(r'$f_{\mathrm{P4}}$' +
 ax2.set_ylabel('$f_{\mathrm{P2}}$' +
                f' {unit_style("GHz")}')
 
+fontsize_text = 7
+
 ax2.text(1.1, 2, r'$\mathrm{Q1^{P4}}$', fontsize=fontsize_text)
 ax2.text(0.85, 0.99, r'$\mathrm{Q2^{P2,P4}}$',
+         fontsize=fontsize_text, rotation=-45)
+ax2.text(1.47, 1.49, r'$\mathrm{(Q1+Q2\_)^{P2,P4}}$',
          fontsize=fontsize_text, rotation=-45)
 ax2.text(2.23, 2.95, r'$\mathrm{Q2^{P4}}$', fontsize=fontsize_text)
 ax2.text(3.0, 1.65, r'$\mathrm{Q1^{-P2,P4}}$',
@@ -438,23 +442,23 @@ ax3.scatter(x, y, s=m, marker='x', color='green',
 ax3.set_xlabel(r'$f_{\mathrm{P4}}$' +
                f' {unit_style("GHz")}', fontsize=8)
 
-ax3.arrow(1.75, 0.5, 0, 0.6,
+ax3.arrow(1.75, 0.55, 0, 0.6,
           head_width=0.07,
           width=0.01,
-          ec='black', clip_on=False)
+          ec='black', fc='black', clip_on=False)
 
 ax3.arrow(4.15, 0.55, 0, 0.67,
           head_width=0.07,
           width=0.01,
-          ec='black', clip_on=False)
+          ec='black', fc='black', clip_on=False)
 
-fontsize_text = 7
 
-# ax3.text(1, 0.35, r'$\mathrm{(Q1+Q2\_)^{2P2,P4}}$', fontsize=fontsize_text)
+ax3.text(0.8, 0.32, r'$\mathrm{(Q1+Q2\_)^{2P2,P4}}$', fontsize=fontsize_text)
 # ax3.text(0.35, 1.7, r'$\mathrm{Q2^{P2,P4}}$', fontsize=fontsize_text)
 ax3.text(3.7, 1.25, r'$\mathrm{Q2^{-P2,P4}}$',
          fontsize=fontsize_text, rotation=45)
-# ax3.text(3.7, 0.35, r'$\mathrm{Q1^{-2P2,P4}}$', fontsize=fontsize_text, rotation=0)
+ax3.text(3.7, 0.32, r'$\mathrm{Q1^{-2P2,P4}}$',
+         fontsize=fontsize_text, rotation=0)
 
 ax2.axis('square')
 ax3.axis('square')
