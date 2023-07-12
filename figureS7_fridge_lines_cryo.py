@@ -79,7 +79,7 @@ popt_cor, pcov_cor = curve_fit(att, xdata, ydata_dBm_cor)
 ax.plot(xdata, ydata_dBm_cor, label='data',
         marker='.', ls=None, markersize=0.1)
 # plt.plot(xdata, att(xdata, *popt), label=f'cryo: slope = {np.round(popt[0],2)} dB/GHz, offset = {np.round(popt[1],2)} dB')
-ax.plot(xdata, att(xdata, *popt_cor), label=f'fit: att_dB',
+ax.plot(xdata, att(xdata, *popt_cor), label=f'{np.round(popt_cor[0],2)} dB/GHz',
         lw=0.9)  # = {np.round(popt_cor[0],2)} dB/GHz
 
 ax.set_xlabel('f (GHz)')

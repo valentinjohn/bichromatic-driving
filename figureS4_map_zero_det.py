@@ -5,39 +5,41 @@ Created on Wed Jul 13 08:22:42 2022
 @author: TUD278427
 """
 
-#%% Imports
+# %% Imports
 from utils.settings import *
+from utils.delft_tools import *
 
-#%% Save path
+# %% Save path
 save_path = get_save_path('FigureS4')
 
-#%% Load data
+# %% Load data
 
 start_time = '2022-07-01\\17-07-32'
 datfile = load_data(start_time)
 
-#%% Calibrated Rabi frequencies
+# %% Calibrated Rabi frequencies
 
 vP1 = -10
 vP2 = 10
 P2_pwr = -5
 P4_pwr = 3
 
-fq1, fq1_,fq2, fq2_ = load_cal_rabi_freq(vP1, vP2, P2_pwr, P4_pwr)
+fq1, fq1_, fq2, fq2_ = load_cal_rabi_freq(vP1, vP2, P2_pwr, P4_pwr)
 fq = fq1
 
-#%% Plotting
+# %% Plotting
 figure_size = 'small'
 
-figsize = {'big':(7.2,4), 'small':(fig_size_single ,2.5)}
+figsize = {'big': (7.2, 4), 'small': (fig_size_single, 2.5)}
 
 P2_frequency = datfile.sig_gen3_frequency_set.ndarray/1e9
-P1_frequency = datfile.sig_gen_frequency_set.ndarray[0,:]/1e9
+P1_frequency = datfile.sig_gen_frequency_set.ndarray[0, :]/1e9
 
 linestyles = ['-', ':', '--', '-.']
-colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf']
+colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd',
+          '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf']
 
-fig, ax1 = plt.subplots(1,1,figsize=figsize[figure_size])
+fig, ax1 = plt.subplots(1, 1, figsize=figsize[figure_size])
 
 vmin = 0
 vmax = 0.6
@@ -45,8 +47,10 @@ c = ax1.pcolor(P1_frequency, P2_frequency, datfile.su0-datfile.su0.min(),
                shading='auto', cmap='hot', zorder=1, vmin=vmin, vmax=vmax,
                )
 
-ax1.set_ylabel('$f_{P2}$ [GHz]')
-ax1.set_xlabel('$f_{P1}$ [GHz]')
+ax1.set_ylabel('$f_{\mathrm{P2}}$' +
+               f' {unit_style("GHz")}')
+ax1.set_xlabel('$f_{\mathrm{P1}}$' +
+               f' {unit_style("GHz")}')
 
 ax1.set_ylim(bottom=0)
 ax1.set_xlim(left=0)
@@ -59,8 +63,8 @@ lw = 1
 
 
 ax1.axis('square')
-ax1.set_ylim(0.9,3.5)
-ax1.set_xlim(0.9,4.2)
+ax1.set_ylim(0.9, 3.5)
+ax1.set_xlim(0.9, 4.2)
 
 divider = make_axes_locatable(ax1)
 cax = divider.append_axes("right", size="5%", pad=0.05)
@@ -78,5 +82,5 @@ cbar.ax.set_yticks([0, 0.2, 0.4, 0.6])
 fig.tight_layout()
 
 
-plt.savefig(save_path+'\\figureS2_map_zero_det.png', dpi=300)
-plt.savefig(save_path+'\\figureS2_map_zero_det.pdf', dpi=300)
+plt.savefig(save_path+'\\FigureS4.png', dpi=300)
+plt.savefig(save_path+'\\FigureS4.pdf', dpi=300)
