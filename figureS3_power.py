@@ -8,7 +8,6 @@ Created on Thu Sep 22 11:27:48 2022
 # %% Imports
 from utils.settings import *
 from utils.delft_tools import *
-from utils.notebook_tools import fit_data
 
 # %% Save path
 save_path = get_save_path('FigureS3')

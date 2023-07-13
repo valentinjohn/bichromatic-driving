@@ -6,8 +6,6 @@ Created on Fri Feb 24 18:14:30 2023
 """
 
 # %% Imports
-from utils.notebook_tools import ExpDec
-from scipy.optimize import curve_fit
 from utils.settings import *
 
 # %% Save path

@@ -50,7 +50,7 @@ color_Q1dif = 'violet'
 color_Q2dif = 'turquoise'
 color_Q2sum = 'lightskyblue'
 
-# %%
+# %% methods
 
 
 def unit_style(unit: str,

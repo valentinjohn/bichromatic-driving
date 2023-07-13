@@ -210,3 +210,26 @@ plt.savefig(os.path.join(save_path, 'figureS5_exchange.pdf'), dpi=300)
 plt.savefig(os.path.join(save_path, 'figureS5_exchange.png'), dpi=300)
 
 plt.show()
+
+# %%
+
+
+n_mw_start = 35
+n_mw_end = 65
+n_step = 0.1
+n_end = 100
+
+x1 = np.arange(0, n_mw_start, n_step)
+y1 = np.zeros(int(n_mw_start/n_step))
+
+x2 = np.arange(n_mw_start, n_mw_end+n_step, n_step)
+y2 = np.sin(np.arange(0, n_mw_end-n_mw_start+n_step, n_step))
+
+x3 = np.arange(n_mw_end+n_step, n_end, n_step)
+y3 = np.zeros(int((n_end-n_mw_end)/n_step))
+
+x = np.append(x1, [x2, x3]).flatten()
+y = np.append(y1, [y2, y3]).flatten()
+
+plt.plot(x, y)
+plt.show()
