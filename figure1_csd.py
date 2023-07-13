@@ -82,7 +82,8 @@ plt.figure(figsize=(2, 2.7))  # 1.7))
 # ******************************************************************************
 # charge stability diagram
 plt.pcolor(P1, P2, charge_sensor, shading='auto',
-           cmap='pink')  # , cmap='hot')
+           cmap='pink',
+           rasterized=True)  # , cmap='hot')
 
 # ******************************************************************************
 # P2 and P4 axis plot

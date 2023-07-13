@@ -44,7 +44,7 @@ fq1, fq1_, fq2, fq2_ = load_cal_rabi_freq(vP1, vP2, P2_pwr, P4_pwr)
 fq = fq1
 
 # %% Plotting
-fig, axs = plt.subplots(1, 5, figsize=(fig_size_single, 3.5), sharex=True)
+fig, axs = plt.subplots(1, 5, figsize=(fig_size_single, 3.7), sharex=True)
 n = 0
 vmin = 0.15
 vmax = 0.9
@@ -164,13 +164,18 @@ for detuning in detuning_list:
         spine.set_edgecolor('deepskyblue')
 
     n = n + 1
-
+fontsize_label = 7
 axs[0].text(-10, 2.62, '$\mathrm{AC2}$', fontsize=7, color='white')
 axs[0].set_ylabel(r'$f_{\mathrm{P4}}$' +
                   f' {unit_style("GHz")}',
                   labelpad=-10)
 axs[2].set_xlabel(r'$\Delta f_{\mathrm{P2}}$' +
                   f' {unit_style("MHz")}')
+axs[0].text(-90, 2.65, '$\mathrm{Q2^{P4}}$',
+            fontsize=fontsize_label, c='black')
+
+fig.suptitle('$\mathrm{Q1^{-P2,P4}}$')
+
 ax2.set_ylabel('$f_{\mathrm{P2}}$' +
                f' {unit_style("GHz")}',
                labelpad=-10)
