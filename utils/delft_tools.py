@@ -9,11 +9,20 @@ Created on Wed Jun 21 08:36:39 2023
 
 import sys
 import os
+import pickle
+
 import numpy as np
 import matplotlib.pyplot as plt
-from utils.notebook_tools import get_data_from
+import matplotlib.colors as mcolors
 from scipy.optimize import curve_fit
-import pickle
+
+import logging
+from functools import partial
+import inspect
+import time
+
+import qcodes
+from qcodes.data.data_set import load_data
 
 # %% definitions
 
@@ -43,7 +52,7 @@ def get_save_path(figure_name: str):
     return save_path
 
 
-def load_data(start_time):
+def load_dat(start_time):
     script_dir = get_script_directory()
     end_time = start_time
     datadir = os.path.join(script_dir, 'data')
@@ -199,6 +208,223 @@ def DoubCoulomb(x, alpha, alpha2, Te, Te2, E0, E02, y0):
     return alpha*np.cosh((x-E0)/(2*Te*8.617e-2))**(-2)+alpha2*np.cosh((x-E02)/(2*Te2*8.617e-2))**(-2)+y0
 
 # %% notebook tools
+
+
+def get_data_from(start_time, end_time='now', num=np.inf,
+                  rootfolder=qcodes.data.data_set.DataSet.default_io.base_location,
+                  verbose=0, only_complete=True):
+    """
+    Read a number of consecutive datasets. arguments:
+        times:  time of first datset in %H-%M-%S format, or
+                datetime of first dataset (%Y-%m-%d\\%H-%M-%S), or
+                two element list with from and to datetimes
+        num:    max number of datasets
+        rootfolder: folder to scan for datasets
+        only_complete: only read finished datasets
+    """
+    datfiles = []
+    fnames = []
+
+    times = [start_time, end_time]
+
+    if isinstance(times, list):
+        try:
+            dtf = time.strptime(times[0], '%Y-%m-%d\\%H-%M-%S')
+        except ValueError as Err:
+            dtf = time.strptime(time.strftime(
+                '%Y-%m-%d\\') + times[0], '%Y-%m-%d\\%H-%M-%S')
+            logging.debug('defaulting dtf to today')
+
+        try:
+            dtt = time.strptime(times[1], '%Y-%m-%d\\%H-%M-%S')
+        except ValueError:
+            try:
+                dtt = time.strptime(time.strftime(
+                    '%Y-%m-%d\\') + times[1], '%Y-%m-%d\\%H-%M-%S')
+                logging.debug('defaulting dtt to today')
+            except ValueError:
+                dtt = time.localtime()
+                logging.debug('defaulting dtt to now')
+    else:
+        raise ValueError('Wrong input format.')
+    rfs = []
+    for fol in os.listdir(rootfolder):
+        try:
+            if dtt.tm_yday >= time.strptime(os.path.basename(
+                    fol), '%Y-%m-%d').tm_yday >= dtf.tm_yday:
+                rfs.append(rootfolder + '\\' + fol)
+        except ValueError as Err:
+            if verbose:
+                print(Err)
+
+    logging.debug('scanning folders %s' % str(rfs))
+    # print('dtt',dtt,'dtf',dtf)
+    for i, rf in enumerate(rfs):
+        for fol in os.listdir(rf):
+            try:
+                t = time.strptime(rf[-10:] + '\\' +
+                                  fol[0:8], '%Y-%m-%d\\%H-%M-%S')
+                if dtt >= t >= dtf and len(datfiles) < num:
+                    fnames.append(rf + '\\' + fol)
+                    try:
+                        datfiles.append(
+                            load_data(location=rf + '\\' + fol, formatter=None, io=None))
+
+                        if any([np.any(np.isnan(arr)) for arr in
+                                datfiles[-1].arrays.values()]) and only_complete:
+                            raise Exception('incomplete')
+                    except Exception as Ex:
+                        logging.info(
+                            'file %s seems to be broken or incomplete, omitting: %s' % (fnames[-1], str(Ex)))
+                        del datfiles[-1]
+                        del fnames[-1]
+            except ValueError as Err:
+                print(Err)
+    print('loaded %d files' % len(datfiles))
+    logging.debug('\n'.join(fnames))
+    return (datfiles, fnames)
+
+
+def get_mw_prop(datfile, gates: list, sig_gen_dict={'p1': 'sig_gen', 'p2': 'sig_gen3', 'p4': 'sig_gen2'}):
+    mw_prop = {}
+
+    for gate in gates:
+        mw_prop[gate] = {}
+        try:
+            RF = round(
+                datfile.metadata['pc0'][f'MW_{gate}_pulses']['p0']['frequency'] / 1e9, 3)
+        except:
+            RF = 0
+
+        LO = round(datfile.metadata['LOs'][f'MW_{gate}'] / 1e9, 3)
+        IF = round(abs(LO - RF), 3)
+
+        # if LO is deactivated, we have to fetch the RF value from sig_gen directly (I think)
+        if RF == 0 and LO == 0:
+            RF = round(datfile.metadata['station']['instruments']
+                       [sig_gen_dict[gate]]['parameters']['frequency']['value'] / 1e9, 3)
+
+        pwr = datfile.metadata['station']['instruments'][sig_gen_dict[gate]
+                                                         ]['parameters']['power']['value']
+
+        try:
+            mw_start = datfile.metadata['pc0'][f'MW_{gate}_pulses']['p0']['start']
+            mw_stop = datfile.metadata['pc0'][f'MW_{gate}_pulses']['p0']['stop']
+            mw_duration = round(mw_stop - mw_start, 1)
+        except:
+            mw_duration = 0
+
+        mw_prop[gate]['rf'] = RF
+        mw_prop[gate]['lo'] = LO
+        mw_prop[gate]['if'] = IF
+        mw_prop[gate]['pwr'] = pwr
+        mw_prop[gate]['time'] = mw_duration
+    return mw_prop
+
+
+def plot_sequence(datfile,
+                  gates=['vP1', 'vP2'],
+                  mws_p=['MW_p1'],
+                  seg_zoom_start=('vP1', 3),
+                  seg_zoom_stop=('vP1', -1),
+                  ax=None,
+                  legend=True,
+                  figsize=[3.37, 2],
+                  show_inset=False,
+                  xlim=False,
+                  inset_pos=[0, 1.15, 1, 1],
+                  show_mw_prop=False,
+                  bbox_to_anchor=(0, 1.5),
+                  show_plot=False,
+                  lw_mw=0.5):
+
+    if ax == None:
+        fig, ax = plt.subplots(1, 1, figsize=figsize)
+    if show_inset:
+        axin = ax.inset_axes(inset_pos)
+    handles = []
+    labels = gates
+
+    n = 0
+    for gate in gates:
+        color = list(mcolors.TABLEAU_COLORS.values())[n]
+        n = n + 1
+        for seg in datfile.metadata['pc0'][f'{gate}_baseband'].keys():
+            start = datfile.metadata['pc0'][f'{gate}_baseband'][seg]['start']
+            stop = datfile.metadata['pc0'][f'{gate}_baseband'][seg]['stop']
+            v_start = datfile.metadata['pc0'][f'{gate}_baseband'][seg]['v_start']
+            v_stop = datfile.metadata['pc0'][f'{gate}_baseband'][seg]['v_stop']
+            time = np.linspace(start, stop, 2)
+            voltage = np.linspace(v_start, v_stop, 2)
+            line = ax.plot(time, voltage, color=color)
+            if show_inset:
+                axin.plot(time, voltage, color=color)
+            ax.set_xlabel('time (ns)')
+            ax.set_ylabel('V (mV)')
+        handles.append(line[0])
+
+    bottom, top = ax.get_ylim()
+    yaxis_max = max(abs(bottom), abs(top))
+
+    mw_pl = []
+    for mw_p in mws_p:
+        mw_pl.append(mw_p[-2:])
+    freq_dict = get_mw_prop(datfile, mw_pl)
+
+    for mw_p in mws_p:
+        color = list(mcolors.TABLEAU_COLORS.values())[n]
+        n = n + 1
+        try:
+            mw_start = datfile.metadata['pc0'][f'{mw_p}_pulses']['p0']['start']
+            mw_stop = datfile.metadata['pc0'][f'{mw_p}_pulses']['p0']['stop']
+            mw_duration = round(mw_stop - mw_start, 1)
+            # mw_amp = datfile.metadata['pc0']['MW_{}_pulses'.format(pl)]['p0']['amplitude']
+            mw_freq = freq_dict[mw_p[-2:]]['rf']
+            mw_time = np.linspace(mw_start, mw_stop, 1001)
+            mw = yaxis_max*np.sin(mw_time*mw_freq)
+            if show_mw_prop:
+                mw_prop = get_mw_prop(datfile, [mw_p[-2:]])[mw_p[-2:]]
+                labels.append(
+                    f"{mw_p} {mw_prop['time']} ns: (RF, LO, IF) = ({mw_prop['rf']}, {mw_prop['lo']}, {mw_prop['if']}) GHz, PWR = {mw_prop['pwr']} dBm")
+            else:
+                labels.append(mw_p)
+
+            line = ax.plot(mw_time, mw,
+                           color=color, lw=lw_mw, alpha=0.5)
+            if show_inset:
+                axin.plot(mw_time, mw, color=color)
+            handles.append(line[0])
+        except:
+            continue
+
+    ax.set_ylim(-1.1*yaxis_max, 1.1*yaxis_max)
+    if xlim:
+        try:
+            ax.set_xlim(xlim[0], xlim[1])
+        except:
+            ax.set_xlim(datfile.metadata['pc0'][f'{seg_zoom_start[0]}_baseband'][f'p{seg_zoom_start[1]}']['start'],
+                        datfile.metadata['pc0'][f'{seg_zoom_stop[0]}_baseband'][f'p{seg_zoom_stop[1]}']['stop'])
+
+    if show_inset:
+        axin.set_xlim(datfile.metadata['pc0'][f'{seg_zoom_start[0]}_baseband'][f'p{seg_zoom_start[1]}']['start'],
+                      datfile.metadata['pc0'][f'{seg_zoom_stop[0]}_baseband'][f'p{seg_zoom_stop[1]}']['stop'])
+        axin.set_ylim(-1.1*yaxis_max, 1.1*yaxis_max)
+        ax.indicate_inset_zoom(axin)
+
+    if legend:
+        ax.legend(handles, labels, bbox_to_anchor=bbox_to_anchor)
+
+    if show_plot:
+        plt.show()
+
+    try:
+        return fig, ax
+    except:
+        pass
+    try:
+        return fig
+    except:
+        pass
 
 
 def fit_data(xdata, ydata, p0=None, func=dGauss,

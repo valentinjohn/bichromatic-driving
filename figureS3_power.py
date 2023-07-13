@@ -17,11 +17,11 @@ save_path = get_save_path('FigureS3')
 start_time_fq1 = '2022-07-07\\20-30-00'
 start_time_fq2 = '2022-07-07\\18-14-31'
 
-datfile_fq1 = datfile = load_data(start_time_fq1)
-datfile_fq2 = load_data(start_time_fq2)
+datfile_fq1 = datfile = load_dat(start_time_fq1)
+datfile_fq2 = load_dat(start_time_fq2)
 
 start_time_q1dif = '2022-07-07\\22-36-07'
-datfile_Q1dif = load_data(start_time_q1dif)
+datfile_Q1dif = load_dat(start_time_q1dif)
 
 mixing_regime = 'difference'
 

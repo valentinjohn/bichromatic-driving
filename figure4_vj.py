@@ -23,7 +23,7 @@ start_times = ['2022-07-11\\12-03-11',
 datfiles_dict = {}
 detuning_list = []
 for start_time in start_times:
-    datfile = load_data(start_time)
+    datfile = load_dat(start_time)
     # detuning position from metadata, p6 is the sequence during which we
     # drive
     vP1 = datfile.metadata['pc0']['vP1_baseband']['p6']['v_start']

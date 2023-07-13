@@ -23,7 +23,7 @@ mixing_regime = ['difference', 'difference', 'sum']
 
 datfile = {}
 for start_time in start_time_list:
-    datfile[start_time] = load_data(start_time)
+    datfile[start_time] = load_dat(start_time)
 
 
 # %% Calibrated Rabi frequencies

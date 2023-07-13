@@ -15,7 +15,7 @@ save_path = get_save_path('FigureS4')
 # %% Load data
 
 start_time = '2022-07-01\\17-07-32'
-datfile = load_data(start_time)
+datfile = load_dat(start_time)
 
 # %% Calibrated Rabi frequencies
 

@@ -29,7 +29,7 @@ qubit = {START_TIME_Q1DIF: 'Q1',
          START_TIME_Q2SUM: 'Q2'}
 
 for START_TIME in start_time_list:
-    datfile[START_TIME] = load_data(START_TIME)
+    datfile[START_TIME] = load_dat(START_TIME)
 
 start_time_rabi_q1dif_list = ['2022-07-13\\15-26-45',
                               '2022-07-13\\15-44-07',
@@ -53,7 +53,7 @@ fp4_fp2 = {}
 datfiles_rabi = {}
 
 for start_time_rabi in start_time_rabi_list:
-    datfile_rabi = load_data(start_time_rabi)
+    datfile_rabi = load_dat(start_time_rabi)
     datfiles_rabi[start_time_rabi] = datfile_rabi
 
     fp4 = (datfile_rabi.metadata['station']['instruments']['sig_gen2']

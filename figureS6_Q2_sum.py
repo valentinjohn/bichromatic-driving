@@ -27,7 +27,7 @@ datfile = {}
 qubit = {start_time_q2sum: 'Q2'}
 
 start_time = start_time_q2sum
-datfile[start_time] = load_data(start_time)
+datfile[start_time] = load_dat(start_time)
 
 # %% Calculate values of all possible resonances
 

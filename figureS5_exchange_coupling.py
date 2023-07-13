@@ -20,10 +20,10 @@ START_TIME_FQ1_ = '2022-07-13\\09-48-32'
 START_TIME_FQ2 = '2022-07-13\\09-52-36'
 START_TIME_FQ2_ = '2022-07-13\\09-53-42'
 
-datfile['fq1'] = load_data(START_TIME_FQ1)
-datfile['fq1_'] = load_data(START_TIME_FQ1_)
-datfile['fq2'] = load_data(START_TIME_FQ2)
-datfile['fq2_'] = load_data(START_TIME_FQ2_)
+datfile['fq1'] = load_dat(START_TIME_FQ1)
+datfile['fq1_'] = load_dat(START_TIME_FQ1_)
+datfile['fq2'] = load_dat(START_TIME_FQ2)
+datfile['fq2_'] = load_dat(START_TIME_FQ2_)
 
 # %% Fitting
 

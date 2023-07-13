@@ -19,10 +19,10 @@ save_path = get_save_path('Figure2')
 show_Rabi = False  # 3 different bichromatic Rabi drives with indication on color plot
 
 start_time = '2022-07-12\\17-59-02'
-datfile = load_data(start_time)
+datfile = load_dat(start_time)
 
 start_time2 = '2022-07-13\\17-27-20'
-datfile2 = load_data(start_time2)
+datfile2 = load_dat(start_time2)
 
 if show_Rabi:
     start_time_rabi_q1dif = '2022-07-13\\15-56-21'
@@ -33,7 +33,7 @@ if show_Rabi:
 
     datfile_rabi = {}
     for start_time_rabi in start_time_rabi_list:
-        datfile_rabi[start_time_rabi] = load_data(start_time_rabi)
+        datfile_rabi[start_time_rabi] = load_dat(start_time_rabi)
 
 # %% Calibrated Rabi frequencies
 

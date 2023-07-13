@@ -18,8 +18,8 @@ plt.rcParams['axes.labelpad'] = 4  # -2
 start_time_fq1 = '2022-07-06\\11-43-01'
 start_time_fq2 = '2022-07-12\\11-40-36'
 
-datfile_fq1 = load_data(start_time_fq1)
-datfile_fq2 = load_data(start_time_fq2)
+datfile_fq1 = load_dat(start_time_fq1)
+datfile_fq2 = load_dat(start_time_fq2)
 
 # %% Calibrated Rabi frequencies
 

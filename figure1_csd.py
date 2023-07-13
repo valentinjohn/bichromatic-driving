@@ -15,13 +15,13 @@ save_path = get_save_path('Figure1')
 
 # %% Loading CSD data
 start_time = '2022-06-29\\22-16-44'
-datfile = load_data(start_time)
+datfile = load_dat(start_time)
 
 # %% Loading reference data set to centralize the CSD according to the measurements performed later
 
 # Loading for the scan along the bichromatiic driving lines of Q1 driven by P4 - P2
 start_time_q1dif = '2022-07-11\\13-12-41'
-datfile_q1dif = load_data(start_time_q1dif)
+datfile_q1dif = load_dat(start_time_q1dif)
 
 # %% Data manipulation
 
