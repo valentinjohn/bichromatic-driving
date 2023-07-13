@@ -97,51 +97,112 @@ UU = (fq1 + fq2)
 STYLE = "Simple, tail_width=0.5, head_width=4, head_length=8"
 kw = dict(arrowSTYLE=STYLE)
 
-fig, axs = plt.subplots(2, 2, sharey='row')
+fig, axs = plt.subplots(4, 2, sharey='row',
+                        gridspec_kw={'height_ratios': [1, 4, 1, 4]})
 
 fq1_freq_scan = np.array(datfile['fq1'].frequency_set)*UNIT_CONVERSION
 fq2_freq_scan = np.array(datfile['fq2'].frequency_set)*UNIT_CONVERSION
 
+axs[0, 0].set_xticks([])
+axs[0, 0].set_yticks([])
+axs[0, 1].set_xticks([])
+axs[0, 1].set_yticks([])
+axs[2, 0].set_xticks([])
+axs[2, 0].set_yticks([])
+axs[2, 1].set_xticks([])
+axs[2, 1].set_yticks([])
 
-axs[0, 0].plot(fq1_freq_scan, fit_fq1, '-', label='fit', color='black', lw=1)
-axs[0, 0].plot(fq1_freq_scan,
-               datfile['fq1'].su0)
-axs[0, 0].plot([fq1, fq1], [0.1, 0.9], '--', color='black', lw=1)
-axs[0, 0].plot([fq1_, fq1_], [0.1, 0.9], '--', color='black', lw=1)
-axs[0, 0].annotate("", xy=(fq1, 0.75), xytext=(
-    fq1_, 0.75), arrowprops=dict(arrowstyle="<->"))
-axs[0, 0].annotate(str(exchange_q1)+' MHz', xy=(fq1+0.007, 0.8))
-axs[0, 0].set_ylabel(r'$1 - P_\downdownarrows$')
-axs[0, 0].set_ylim(0.1, 0.95)
-axs[0, 0].axes.xaxis.set_ticklabels([])
+axs[0, 0].set_xlim([0, 100])
+axs[0, 0].set_xlim([0, 100])
+axs[0, 1].set_xlim([0, 100])
+axs[0, 1].set_xlim([0, 100])
+axs[2, 0].set_xlim([0, 100])
+axs[2, 0].set_xlim([0, 100])
+axs[2, 1].set_xlim([0, 100])
+axs[2, 1].set_xlim([0, 100])
 
-axs[1, 0].plot(fq1_freq_scan, fit_fq1_, '-', label='fit', color='black', lw=1)
+axs[0, 0].set_ylim([-1.5, 1.5])
+axs[0, 0].set_ylim([-1.5, 1.5])
+axs[0, 1].set_ylim([-1.5, 1.5])
+axs[0, 1].set_ylim([-1.5, 1.5])
+axs[2, 0].set_ylim([-1.5, 1.5])
+axs[2, 0].set_ylim([-1.5, 1.5])
+axs[2, 1].set_ylim([-1.5, 1.5])
+axs[2, 1].set_ylim([-1.5, 1.5])
+
+axs[0, 0].plot(np.arange(35, 65.1, 0.1),
+               np.sin(np.arange(0, 30.1, 0.1)),
+               c='tab:blue')
+axs[0, 1].plot(np.arange(35, 65.1, 0.1),
+               np.sin(np.arange(0, 30.1, 0.1)),
+               c='tab:green')
+
+axs[1, 0].plot(fq1_freq_scan, fit_fq1, '-', label='fit', color='black', lw=1)
 axs[1, 0].plot(fq1_freq_scan,
-               datfile['fq1_'].su0)
+               datfile['fq1'].su0)
 axs[1, 0].plot([fq1, fq1], [0.1, 0.9], '--', color='black', lw=1)
 axs[1, 0].plot([fq1_, fq1_], [0.1, 0.9], '--', color='black', lw=1)
-axs[1, 0].set_xlabel('$f_{\mathrm{P4}}$' +
-                     f' {unit_style("GHz")}')
+axs[1, 0].annotate("", xy=(fq1, 0.75), xytext=(
+    fq1_, 0.75), arrowprops=dict(arrowstyle="<->"))
+axs[1, 0].annotate(str(exchange_q1)+' MHz', xy=(fq1+0.007, 0.8))
 axs[1, 0].set_ylabel(r'$1 - P_\downdownarrows$')
 axs[1, 0].set_ylim(0.1, 0.95)
+axs[1, 0].axes.xaxis.set_ticklabels([])
+
+axs[2, 0].plot(np.arange(0, 35, 0.1),
+               np.zeros(int(35/0.1)),
+               c='tab:blue')
+axs[2, 0].plot(np.arange(35, 65.1, 0.1),
+               np.sin(np.arange(0, 30.1, 0.1)),
+               c='tab:blue')
+axs[2, 0].plot(np.arange(65.1, 100, 0.1),
+               np.zeros(int(35/0.1)),
+               c='tab:blue')
+axs[2, 0].plot(np.arange(10, 25.1, 0.1),
+               np.sin(np.arange(0, 15.1, 0.1)),
+               c='tab:green')
+axs[2, 0].plot(np.arange(75, 90.1, 0.1),
+               np.sin(np.arange(0, 15.1, 0.1)),
+               c='tab:green')
+
+axs[2, 1].plot(np.arange(10, 25.1, 0.1),
+               np.sin(np.arange(0, 15.1, 0.1)),
+               c='tab:blue')
+axs[2, 1].plot(np.arange(35, 65.1, 0.1),
+               np.sin(np.arange(0, 30.1, 0.1)),
+               c='tab:green')
+axs[2, 1].plot(np.arange(75, 90.1, 0.1),
+               np.sin(np.arange(0, 15.1, 0.1)),
+               c='tab:blue')
 
 
-axs[0, 1].plot(fq2_freq_scan, fit_fq2, '-', label='fit', color='black', lw=1)
-axs[0, 1].plot(fq2_freq_scan,
-               datfile['fq2'].su0)
-axs[0, 1].plot([fq2, fq2], [0.1, 0.9], '--', color='black', lw=1)
-axs[0, 1].plot([fq2_, fq2_], [0.1, 0.9], '--', color='black', lw=1)
-axs[0, 1].annotate("", xy=(fq2, 0.75), xytext=(
-    fq2_, 0.75), arrowprops=dict(arrowstyle="<->"))
-axs[0, 1].annotate(str(exchange_q2)+' MHz', xy=(fq2+0.007, 0.8))
-axs[0, 1].axes.xaxis.set_ticklabels([])
+axs[3, 0].plot(fq1_freq_scan, fit_fq1_, '-', label='fit', color='black', lw=1)
+axs[3, 0].plot(fq1_freq_scan,
+               datfile['fq1_'].su0)
+axs[3, 0].plot([fq1, fq1], [0.1, 0.9], '--', color='black', lw=1)
+axs[3, 0].plot([fq1_, fq1_], [0.1, 0.9], '--', color='black', lw=1)
+axs[3, 0].set_xlabel('$f_{\mathrm{P4}}$' +
+                     f' {unit_style("GHz")}')
+axs[3, 0].set_ylabel(r'$1 - P_\downdownarrows$')
+axs[3, 0].set_ylim(0.1, 0.95)
 
-axs[1, 1].plot(fq2_freq_scan, fit_fq2_, '-', label='fit', color='black', lw=1)
+
+axs[1, 1].plot(fq2_freq_scan, fit_fq2, '-', label='fit', color='black', lw=1)
 axs[1, 1].plot(fq2_freq_scan,
-               datfile['fq2_'].su0)
+               datfile['fq2'].su0)
 axs[1, 1].plot([fq2, fq2], [0.1, 0.9], '--', color='black', lw=1)
 axs[1, 1].plot([fq2_, fq2_], [0.1, 0.9], '--', color='black', lw=1)
-axs[1, 1].set_xlabel('$f_{\mathrm{P2}}$' +
+axs[1, 1].annotate("", xy=(fq2, 0.75), xytext=(
+    fq2_, 0.75), arrowprops=dict(arrowstyle="<->"))
+axs[1, 1].annotate(str(exchange_q2)+' MHz', xy=(fq2+0.007, 0.8))
+axs[1, 1].axes.xaxis.set_ticklabels([])
+
+axs[3, 1].plot(fq2_freq_scan, fit_fq2_, '-', label='fit', color='black', lw=1)
+axs[3, 1].plot(fq2_freq_scan,
+               datfile['fq2_'].su0)
+axs[3, 1].plot([fq2, fq2], [0.1, 0.9], '--', color='black', lw=1)
+axs[3, 1].plot([fq2_, fq2_], [0.1, 0.9], '--', color='black', lw=1)
+axs[3, 1].set_xlabel('$f_{\mathrm{P2}}$' +
                      f' {unit_style("GHz")}')
 
 plt.tight_layout()
