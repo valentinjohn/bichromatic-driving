@@ -61,21 +61,11 @@ real_gates = ['P1', 'P2', 'P4']
 df_pl12 = df_pl.loc[virtual_gates, real_gates]  # .round(3)
 df_pl12_inv = df_pl_inv.loc[real_gates, virtual_gates]  # .round(3)
 
-# %% Virtual plungers definitions
+# %% Plotting
 
-
-def vP1(P2, P4):
-    return df_pl12.loc['vP1']['P2']*P2 + df_pl12.loc['vP1']['P4']*P4
-
-
-def vP2(P2, P4):
-    return df_pl12.loc['vP2']['P2']*P2 + df_pl12.loc['vP2']['P4']*P4
-
-
+# Amplitudes
 A_P4 = 2.8*5
 A_P2 = 1.9*5
-
-# %% Plotting
 
 plt.figure(figsize=(2, 2.7))  # 1.7))
 
@@ -83,23 +73,23 @@ plt.figure(figsize=(2, 2.7))  # 1.7))
 # charge stability diagram
 plt.pcolor(P1, P2, charge_sensor, shading='auto',
            cmap='pink',
-           rasterized=True)  # , cmap='hot')
+           rasterized=True)
 
 # ******************************************************************************
 # P2 and P4 axis plot
 offset = [-10, 10]
 
-plt.quiver(-10, 10, vP1(A_P2, 0), vP2(A_P2, 0),
+plt.quiver(-10, 10, vP1(df_pl12, A_P2, 0), vP2(df_pl12, A_P2, 0),
            angles='xy', scale_units='xy', scale=1, headwidth=8,
            label='P2 axis', color=color_P2)
-plt.quiver(-10, 10, -vP1(A_P2, 0), -vP2(A_P2, 0),
+plt.quiver(-10, 10, -vP1(df_pl12, A_P2, 0), -vP2(df_pl12, A_P2, 0),
            angles='xy', scale_units='xy', scale=1, headwidth=8,
            color=color_P2)
 
-plt.quiver(-10, 10, vP1(0, A_P4), vP2(0, A_P4),
+plt.quiver(-10, 10, vP1(df_pl12, 0, A_P4), vP2(df_pl12, 0, A_P4),
            angles='xy', scale_units='xy', scale=1, headwidth=8,
            label='P4 axis', color=color_P4)
-plt.quiver(-10, 10, -vP1(0, A_P4), -vP2(0, A_P4),
+plt.quiver(-10, 10, -vP1(df_pl12, 0, A_P4), -vP2(df_pl12, 0, A_P4),
            angles='xy', scale_units='xy', scale=1, headwidth=8,
            color=color_P4)
 

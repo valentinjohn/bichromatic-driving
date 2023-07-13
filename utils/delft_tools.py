@@ -12,6 +12,7 @@ import os
 import pickle
 
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 from scipy.optimize import curve_fit
@@ -94,6 +95,20 @@ def Q_dif(fp4, fq):
 def Q_sum(fp4, fq):
     fp2 = fq - fp4
     return fp2
+
+
+# %% Virtual plunger values vP1 and vP2 as a function of P2 and P4
+
+def vP1(df_virtual_gate_matrix: pd.DataFrame,
+        P2, P4):
+    return (df_virtual_gate_matrix.loc['vP1']['P2']*P2
+            + df_virtual_gate_matrix.loc['vP1']['P4']*P4)
+
+
+def vP2(df_virtual_gate_matrix: pd.DataFrame,
+        P2, P4):
+    return (df_virtual_gate_matrix.loc['vP2']['P2']*P2
+            + df_virtual_gate_matrix.loc['vP2']['P4']*P4)
 
 # %% definitions power considerations
 
