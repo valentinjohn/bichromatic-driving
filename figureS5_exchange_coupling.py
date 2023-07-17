@@ -6,6 +6,7 @@ Created on Tue Sep 20 09:01:25 2022
 """
 
 # %% Imports
+import numpy as np
 from utils.settings import *
 from utils.delft_tools import *
 
@@ -103,6 +104,36 @@ fig, axs = plt.subplots(4, 2, sharey='row',
 fq1_freq_scan = np.array(datfile['fq1'].frequency_set)*UNIT_CONVERSION
 fq2_freq_scan = np.array(datfile['fq2'].frequency_set)*UNIT_CONVERSION
 
+total_time = 100
+start_time = 10
+end_time = 25
+frequency = 0.2
+num_pulses = 2
+time_between_pulses = 40
+t, pre_pulse_q1 = generate_pulse(total_time, start_time, end_time,
+                                 frequency, num_pulses, time_between_pulses)
+start_time = 35
+end_time = 65
+frequency = 0.2
+num_pulses = 1
+time_between_pulses = 20
+t, main_pulse_q1 = generate_pulse(total_time, start_time, end_time,
+                                  frequency, num_pulses, time_between_pulses)
+start_time = 10
+end_time = 25
+frequency = 0.3
+num_pulses = 2
+time_between_pulses = 40
+t, pre_pulse_q2 = generate_pulse(total_time, start_time, end_time,
+                                 frequency, num_pulses, time_between_pulses)
+start_time = 35
+end_time = 65
+frequency = 0.3
+num_pulses = 1
+time_between_pulses = 20
+t, main_pulse_q2 = generate_pulse(total_time, start_time, end_time,
+                                  frequency, num_pulses, time_between_pulses)
+
 axs[0, 0].set_xticks([])
 axs[0, 0].set_yticks([])
 axs[0, 1].set_xticks([])
@@ -130,16 +161,12 @@ axs[2, 0].set_ylim([-1.5, 1.5])
 axs[2, 1].set_ylim([-1.5, 1.5])
 axs[2, 1].set_ylim([-1.5, 1.5])
 
-axs[0, 0].plot(np.arange(35, 65.1, 0.1),
-               np.sin(np.arange(0, 30.1, 0.1)),
-               c='tab:blue')
-axs[0, 1].plot(np.arange(35, 65.1, 0.1),
-               np.sin(np.arange(0, 30.1, 0.1)),
-               c='tab:green')
+axs[0, 0].plot(t, main_pulse_q1, c='tab:blue')
+axs[0, 1].plot(t, main_pulse_q2, c='tab:green')
 
 axs[1, 0].plot(fq1_freq_scan, fit_fq1, '-', label='fit', color='black', lw=1)
 axs[1, 0].plot(fq1_freq_scan,
-               datfile['fq1'].su0)
+               datfile['fq1'].su0, c='tab:blue')
 axs[1, 0].plot([fq1, fq1], [0.1, 0.9], '--', color='black', lw=1)
 axs[1, 0].plot([fq1_, fq1_], [0.1, 0.9], '--', color='black', lw=1)
 axs[1, 0].annotate("", xy=(fq1, 0.75), xytext=(
@@ -149,36 +176,16 @@ axs[1, 0].set_ylabel(r'$1 - P_\downdownarrows$')
 axs[1, 0].set_ylim(0.1, 0.95)
 axs[1, 0].axes.xaxis.set_ticklabels([])
 
-axs[2, 0].plot(np.arange(0, 35, 0.1),
-               np.zeros(int(35/0.1)),
-               c='tab:blue')
-axs[2, 0].plot(np.arange(35, 65.1, 0.1),
-               np.sin(np.arange(0, 30.1, 0.1)),
-               c='tab:blue')
-axs[2, 0].plot(np.arange(65.1, 100, 0.1),
-               np.zeros(int(35/0.1)),
-               c='tab:blue')
-axs[2, 0].plot(np.arange(10, 25.1, 0.1),
-               np.sin(np.arange(0, 15.1, 0.1)),
-               c='tab:green')
-axs[2, 0].plot(np.arange(75, 90.1, 0.1),
-               np.sin(np.arange(0, 15.1, 0.1)),
-               c='tab:green')
+axs[2, 0].plot(t, pre_pulse_q2, c='tab:green')
+axs[2, 0].plot(t, main_pulse_q1, c='tab:blue')
 
-axs[2, 1].plot(np.arange(10, 25.1, 0.1),
-               np.sin(np.arange(0, 15.1, 0.1)),
-               c='tab:blue')
-axs[2, 1].plot(np.arange(35, 65.1, 0.1),
-               np.sin(np.arange(0, 30.1, 0.1)),
-               c='tab:green')
-axs[2, 1].plot(np.arange(75, 90.1, 0.1),
-               np.sin(np.arange(0, 15.1, 0.1)),
-               c='tab:blue')
+axs[2, 1].plot(t, pre_pulse_q1, c='tab:blue')
+axs[2, 1].plot(t, main_pulse_q2, c='tab:green')
 
 
 axs[3, 0].plot(fq1_freq_scan, fit_fq1_, '-', label='fit', color='black', lw=1)
 axs[3, 0].plot(fq1_freq_scan,
-               datfile['fq1_'].su0)
+               datfile['fq1_'].su0, c='tab:blue')
 axs[3, 0].plot([fq1, fq1], [0.1, 0.9], '--', color='black', lw=1)
 axs[3, 0].plot([fq1_, fq1_], [0.1, 0.9], '--', color='black', lw=1)
 axs[3, 0].set_xlabel('$f_{\mathrm{P4}}$' +
@@ -189,7 +196,7 @@ axs[3, 0].set_ylim(0.1, 0.95)
 
 axs[1, 1].plot(fq2_freq_scan, fit_fq2, '-', label='fit', color='black', lw=1)
 axs[1, 1].plot(fq2_freq_scan,
-               datfile['fq2'].su0)
+               datfile['fq2'].su0, c='tab:green')
 axs[1, 1].plot([fq2, fq2], [0.1, 0.9], '--', color='black', lw=1)
 axs[1, 1].plot([fq2_, fq2_], [0.1, 0.9], '--', color='black', lw=1)
 axs[1, 1].annotate("", xy=(fq2, 0.75), xytext=(
@@ -199,7 +206,7 @@ axs[1, 1].axes.xaxis.set_ticklabels([])
 
 axs[3, 1].plot(fq2_freq_scan, fit_fq2_, '-', label='fit', color='black', lw=1)
 axs[3, 1].plot(fq2_freq_scan,
-               datfile['fq2_'].su0)
+               datfile['fq2_'].su0, c='tab:green')
 axs[3, 1].plot([fq2, fq2], [0.1, 0.9], '--', color='black', lw=1)
 axs[3, 1].plot([fq2_, fq2_], [0.1, 0.9], '--', color='black', lw=1)
 axs[3, 1].set_xlabel('$f_{\mathrm{P2}}$' +
@@ -209,27 +216,4 @@ plt.tight_layout()
 plt.savefig(os.path.join(save_path, 'figureS5_exchange.pdf'), dpi=300)
 plt.savefig(os.path.join(save_path, 'figureS5_exchange.png'), dpi=300)
 
-plt.show()
-
-# %%
-
-
-n_mw_start = 35
-n_mw_end = 65
-n_step = 0.1
-n_end = 100
-
-x1 = np.arange(0, n_mw_start, n_step)
-y1 = np.zeros(int(n_mw_start/n_step))
-
-x2 = np.arange(n_mw_start, n_mw_end+n_step, n_step)
-y2 = np.sin(np.arange(0, n_mw_end-n_mw_start+n_step, n_step))
-
-x3 = np.arange(n_mw_end+n_step, n_end, n_step)
-y3 = np.zeros(int((n_end-n_mw_end)/n_step))
-
-x = np.append(x1, [x2, x3]).flatten()
-y = np.append(y1, [y2, y3]).flatten()
-
-plt.plot(x, y)
 plt.show()

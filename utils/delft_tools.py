@@ -97,7 +97,31 @@ def Q_sum(fp4, fq):
     return fp2
 
 
+def generate_pulse(total_time, start_time, end_time, frequency, num_pulses, time_between_pulses):
+    # Create time array
+    t = np.linspace(0, total_time, 1000*total_time)
+
+    # Initialize signal array
+    signal = np.zeros_like(t)
+
+    for i in range(num_pulses):
+        # Calculate start and end indices for each pulse
+        start_index = np.where(t >= start_time + i *
+                               (end_time + time_between_pulses))[0][0]
+        end_index = np.where(
+            t < end_time + i*(end_time + time_between_pulses))[0][-1]
+
+        # Generate pulse
+        pulse_t = t[:end_index-start_index]
+        pulse = np.sin(2 * np.pi * frequency * pulse_t)
+
+        # Add pulse to signal
+        signal[start_index:end_index] = pulse
+
+    return t, signal
+
 # %% Virtual plunger values vP1 and vP2 as a function of P2 and P4
+
 
 def vP1(df_virtual_gate_matrix: pd.DataFrame,
         P2, P4):
