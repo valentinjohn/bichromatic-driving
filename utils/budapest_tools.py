@@ -9,6 +9,8 @@ Created on Mon Jun  5 19:39:38 2023
 
 from scipy.constants import physical_constants
 import numpy as np
+from scipy.signal import savgol_filter
+from scipy.interpolate import interp1d
 
 # %% constants
 
@@ -32,8 +34,31 @@ Q1 = 1.514  # transition frequencies
 Q1b = 1.570
 Q2 = 2.655
 Q2b = 2.714
+GammaU=121.28400326213747
 
 # %% Definitions
+def epsP2(f):
+    M12=0.446
+    M22=1.231
+    attenuation=np.loadtxt("attenuation.txt")
+    A=attenuation[1,:]*np.sqrt(2)
+    freq=attenuation[0,:]
+    n=105
+    A_first=A[0:n]
+    A_second=A[n:len(A)]
+    A_filtered1=savgol_filter(A_first,7,3)
+    A_filtered2=savgol_filter(A_second,65,3)
+    A_filtered1=np.array(A_filtered1)
+    A_filtered2=np.array(A_filtered2)
+
+    A_filtered=np.concatenate((A_filtered1,A_filtered2))
+
+    A_final=interp1d(freq,A_filtered,kind='cubic')
+    
+    lista=A_final(f)*alpha*(M22-M12)*1000
+    lista=lista.astype(np.float64)
+
+    return lista
 
 
 def get_fq1(VP1):  # this function calculates the frequency of qubit 1 at different detunings (VP2=-VP1)
@@ -61,50 +86,77 @@ def EP2(f):  # frequency in GHz, EP2 in ueV, calculates the electric field of pl
     return cucc*beta*1000
 
 
-def curve_AC5(x, b0, b1, chi3):
-    return (chi3**2-(2*b0+b1)*x-b0*b1-2*x**2)/(x+b0)
+def x_curve_AC5_up(y_up,b0,b1,t):
+    eps=20000*alpha
+    fQ2=2.655
+    GammaU=121.28400326213747
+    C=epsP2(y_up-fQ2)**2*U*(U**2+3*eps**2)/(U**2-eps**2)**3*0.2417990504*GammaU
+    D=epsP2(y_up-fQ2)*2*U*eps/(U**2-eps**2)**2*0.2417990504
+    a1=b0-C
+    chi3=D*t**2
+    a2=b1+y_up-C
+    
+    return (-(2*a1+a2)+np.sqrt((2*a1-a2)**2+8*chi3**2))/4
+
+def x_curve_AC5_down(y_down,b0,b1,t):
+    eps=20000*alpha
+    fQ2=2.655
+    GammaU=121.28400326213747
+    C=epsP2(y_down-fQ2)**2*U*(U**2+3*eps**2)/(U**2-eps**2)**3*0.2417990504*GammaU
+    D=epsP2(y_down-fQ2)*2*U*eps/(U**2-eps**2)**2*0.2417990504
+    
+    a1=b0-C
+    chi3=D*t**2
+    a2=b1+y_down-C
+    
+    return (-(2*a1+a2)-np.sqrt((2*a1-a2)**2+8*chi3**2))/4
 
 
-def curve_AC3(x, x0, y0, chi3):
-    return y0-chi3**2/(x-x0)
+def x_curve_AC3(y,x0,y0,tO):  #theoretical curve of the upper part of the attenuation, with 0 attenuation 
+    eps=20000*alpha
+    fQ2=2.655
+    GammaU=121.28400326213747
+    C=epsP2(y-fQ2)**2*U*(U**2+3*eps**2)/(U**2-eps**2)**3*0.2417990504*GammaU
+    D=epsP2(y-fQ2)*2*U*eps/(U**2-eps**2)**2*0.2417990504
+    return D**2*tO**2/(y0-y)+x0+C
 
 
-def curve_AC1(x, x0, y0, chi3):
-    return y0+chi3**2/(x-x0)
+def x_curve_AC1(y,x0,y0,t):  #theoretical curve of the upper part of the attenuation, with 0 attenuation 
+    eps=20000*alpha
+    fQ2=2.655
+    GammaU=121.28400326213747
+    C=epsP2(fQ2-y)**2*U*(U**2+3*eps**2)/(U**2-eps**2)**3*0.2417990504*GammaU
+    D=epsP2(fQ2-y)*2*U*eps/(U**2-eps**2)**2*0.2417990504
+    return -D**2*t**4/(y0-y-C)+x0-C
 
 
-def curve_AC4(x, b0, b1, chi3):
-    return (chi3**2+(2*b0+b1)*x-b0*b1-2*x**2)/(b0-x)
+def x_curve_AC4_down(y_down,b0,b1,tO):
+    
+    eps=20000*alpha
+    fQ2=2.655
+    GammaU=121.28400326213747
+    C=epsP2(fQ2-y_down)**2*U*(U**2+3*eps**2)/(U**2-eps**2)**3*0.2417990504*GammaU
+    D=epsP2(fQ2-y_down)*2*U*eps/(U**2-eps**2)**2*0.2417990504
+    
+    a1=b0-C
+    a2=y_down+b1
+    chi3=D*tO
+    
+    return (2*a1+a2+np.sqrt((2*a1-a2)**2+8*chi3**2))/4
 
-
-def chi3_AC5(freq):
-    VP = 10000
-    return 2*EP2(freq)*2*VP*t_avg*t_avg*aU**2/(U*(1-aU**2*(2*VP)**2)**2)*241799.050402293*10**9*10**(-6)
-
-
-def chi3_AC3(freq):
-    VP = 10000
-    return 2*EP2(freq)*2*VP*t_avg*O_avg*aU**2/(U*(1-aU**2*(2*VP)**2)**2)*241799.050402293*10**9*10**(-6)
-
-
-def chi3_AC1(freq):
-    VP = 10000
-    return 2*EP2(1.141)*2*VP*t_avg*t_avg*aU**2/(U*(1-aU**2*(2*VP)**2)**2)*241799.050402293*10**9*10**(-6)
-
-
-def chi3_AC4(freq):
-    VP = 10000
-    return 2*EP2(1.57)*2*VP*t_avg*O_avg*aU**2/(U*(1-aU**2*(2*VP)**2)**2)*241799.050402293*10**9*10**(-6)
-
-
-def chi3_AC2(VP1, ratio):
-    return 2*EP2(1.141)*2*VP1*ratio*aU**2/(1*(1-aU**2*(2*VP1)**2)**2)
-
-
-def chi3_AC2_eps(VP1):
-    chi3 = 2*EP2(1.141)*2*VP1*t_avg**2*aU**2/(U*(1-aU**2*(2*VP1)**2)**2)
-    chi3 = chi3*241799.050402293*10**(-6)*10**(9)
-    return chi3
+def x_curve_AC4_up(y_up,b0,b1,tO):
+    
+    eps=20000*alpha
+    fQ2=2.655
+    GammaU=121.28400326213747
+    C=epsP2(fQ2-y_up)**2*U*(U**2+3*eps**2)/(U**2-eps**2)**3*0.2417990504*GammaU
+    D=epsP2(fQ2-y_up)*2*U*eps/(U**2-eps**2)**2*0.2417990504
+    
+    a1=b0-C
+    a2=y_up+b1
+    chi3=D*tO
+    
+    return (2*a1+a2-np.sqrt((2*a1-a2)**2+8*chi3**2))/4
 
 
 def plotting(x, ax, VP1, color):  # this function plots resonance lines
@@ -119,13 +171,12 @@ def plotting(x, ax, VP1, color):  # this function plots resonance lines
             linewidth=0.8, linestyle=(0, (3, 3)))
 
 
-def x_1(y_u, y0, x0, A, chi3, fq1, fc):
-    return (x0*(y_u-y0)+pow(10, 0*(y_u-fq1-fc))*(A*(x0+y_u-y0+A*pow(10, 0*(y_u-fq1-fc)))-chi3**2))/(y_u-y0+A*10**(0*(y_u-fq1-fc)))
-
-
-def x_2(y_d, y0, x0, A, chi3, fq1, fc):
-    b = 5.0*10**(-9)
-    return (x0*(y_d-y0)+pow(10, b*(y_d-fq1-fc))*(A*(x0+y_d-y0+A*pow(10, b*(y_d-fq1-fc)))-chi3**2))/(y_d-y0+A*10**(b*(y_d-fq1-fc)))
+def x_1(y, x0, y0, t, VP):
+    eps=2*alpha*VP
+    fQ1=1.514
+    C=epsP2(y-fQ1)**2*U*(U**2+3*eps**2)/(U**2-eps**2)**3*0.2417990504*GammaU
+    D=epsP2(y-fQ1)*2*U*eps/(U**2-eps**2)**2*0.2417990504
+    return D**2*t**4/(y0-y-C)+x0+C
 
 
 def mono(P, f, ax2):  # P is either 2 or 4, f can be Q1, Q2 or Q1+Q2b
