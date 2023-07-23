@@ -23,7 +23,7 @@ start_times = ['2022-07-11\\12-03-11',
 datfiles_dict = {}
 detuning_list = []
 for start_time in start_times:
-    datfile = load_data(start_time)
+    datfile = load_dat(start_time)
     # detuning position from metadata, p6 is the sequence during which we
     # drive
     vP1 = datfile.metadata['pc0']['vP1_baseband']['p6']['v_start']
@@ -44,8 +44,10 @@ fq1, fq1_, fq2, fq2_ = load_cal_rabi_freq(vP1, vP2, P2_pwr, P4_pwr)
 fq = fq1
 
 # %% Plotting
-fig, axs = plt.subplots(1, 5, figsize=(fig_size_single, 3), sharex=True)
+fig, axs = plt.subplots(1, 5, figsize=(fig_size_single, 3.7), sharex=True)
 n = 0
+vmin = 0.15
+vmax = 0.9
 
 VP1 = 1000*np.linspace(7, 11, 5)
 
@@ -100,10 +102,12 @@ for detuning in detuning_list:
     fp4 = abs(fp2 - fq)
 
     axs[n].pcolor(delta/1e6, fp2/1e9, datfile.su0,
-                  shading='auto', cmap='hot', zorder=0)
+                  shading='auto', cmap='hot', zorder=0,
+                  vmin=vmin, vmax=vmax)
     axs[n].yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
     axs[n].tick_params('x', labelrotation=45)
     axs[n].set_xticks([-30, 0, +30])
+    axs[n].set_yticks([2.4, 2.8, 3.4, 3.8])
     for spine in axs[n].spines.values():
         spine.set_edgecolor('blue')
 
@@ -124,20 +128,28 @@ for detuning in detuning_list:
     fp2_max, fp2_min = axs[n].get_ylim()
     ax2.set_ylim(fp2_max - fq, fp2_min - fq)
     if n < len(detuning_list)-1:
-        ax2.set_yticklabels([])
         ax2.set_yticks([])
+    else:
+        ax2.set_yticks([0.8, 1.2, 1.8, 2.2])
     for spine in ax2.spines.values():
         spine.set_edgecolor('deepskyblue')
 
     n = n + 1
-
+fontsize_label = 7
 axs[0].text(-10, 2.62, '$\mathrm{AC2}$', fontsize=7, color='white')
 axs[0].set_ylabel(r'$f_{\mathrm{P4}}$' +
-                  f' {unit_style("GHz")}')
+                  f' {unit_style("GHz")}',
+                  labelpad=-10)
 axs[2].set_xlabel(r'$\Delta f_{\mathrm{P2}}$' +
                   f' {unit_style("MHz")}')
+axs[0].text(-90, 2.65, '$\mathrm{Q2^{P4}}$',
+            fontsize=fontsize_label, c='black')
+
+fig.suptitle('$\mathrm{Q1^{-P2,P4}}$')
+
 ax2.set_ylabel('$f_{\mathrm{P2}}$' +
-               f' {unit_style("GHz")}')
+               f' {unit_style("GHz")}',
+               labelpad=-10)
 
 plt.subplots_adjust(left=0.07,
                     bottom=0.05,

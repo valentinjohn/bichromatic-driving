@@ -7,6 +7,7 @@ Created on Mon Jul 11 10:59:25 2022
 
 # %% Imports
 from utils.settings import *
+from utils.delft_tools import *
 
 # %% Save path
 save_path = get_save_path('FigureS6')
@@ -28,7 +29,7 @@ qubit = {START_TIME_Q1DIF: 'Q1',
          START_TIME_Q2SUM: 'Q2'}
 
 for START_TIME in start_time_list:
-    datfile[START_TIME] = load_data(START_TIME)
+    datfile[START_TIME] = load_dat(START_TIME)
 
 start_time_rabi_q1dif_list = ['2022-07-13\\15-26-45',
                               '2022-07-13\\15-44-07',
@@ -52,7 +53,7 @@ fp4_fp2 = {}
 datfiles_rabi = {}
 
 for start_time_rabi in start_time_rabi_list:
-    datfile_rabi = load_data(start_time_rabi)
+    datfile_rabi = load_dat(start_time_rabi)
     datfiles_rabi[start_time_rabi] = datfile_rabi
 
     fp4 = (datfile_rabi.metadata['station']['instruments']['sig_gen2']
@@ -135,6 +136,9 @@ f_res_list = [item for item in f_res_list
 
 # %% Plotting
 
+vmin = 0.15
+vmax = 0.8
+
 fig, axes = plt.subplot_mosaic([["Q1_dif", "Q1_dif_sim", "empty", "Q2_dif", "Q2_dif_sim", "empty2", "Q2_sum", "Q2_sum_sim"],
                                 ["Rabi_Q1d1", "Rabi_Q1d1", "empty", "Rabi_Q2d1",
                                     "Rabi_Q2d1", "empty2", "Rabi_Q2s1", "Rabi_Q2s1"],
@@ -174,8 +178,9 @@ for START_TIME in start_time_list:
     elif qubit[START_TIME] == 'Q2':
         fq = fq2/1e9
 
-    c = ax.pcolor(delta/1e6, fp2/1e9, datfile[START_TIME].su0,
-                  shading='auto', cmap='hot', zorder=0)
+    cm = ax.pcolor(delta/1e6, fp2/1e9, datfile[START_TIME].su0,
+                   shading='auto', cmap='hot', zorder=0,
+                   vmin=vmin, vmax=vmax)
 
     # divider = make_axes_locatable(ax)
     # cax = divider.append_axes("top", size="5%", pad="2%")
@@ -195,8 +200,10 @@ for START_TIME in start_time_list:
         spine.set_edgecolor(colors[n])
 
     if n == 0:
-        ax.set_ylabel('$f_{P4}$ [GHz]')
-    ax.set_xlabel(r'$\Delta f_{P2}$ [MHz]')
+        ax.set_ylabel('$f_{\mathrm{P4}}$' +
+                      f' {unit_style("GHz")}')
+    ax.set_xlabel(r'$\Delta f_{\mathrm{P2}}$' +
+                  f' {unit_style("MHz")}')
     ax.yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
 
     ax2 = ax.twinx()
@@ -251,7 +258,7 @@ fres_nP2_nP4 = [[fq1, 1, -1],
                 [fq1, 1, 0],
                 [fq2, 0, 1],
                 [fq2, 2, 0],
-                [fq_sum, 1, 1],
+                # [fq_sum, 1, 1],
                 [fq_sum, 2, 0],
                 [fq_sum, 3, 0]
                 ]
@@ -280,7 +287,7 @@ for [f_res, n_P2, n_P4] in fres_nP2_nP4:
         if abs(fp2_delta_vert) < fp4_delta_span/2*1e3:
             axes['Q1_dif_sim'].vlines(fp2_delta_vert, fp4_start, fp4_stop,
                                       label=f'{label_Q}^{label_P}, SLOPE = {SLOPE}',
-                                      color='black', ls='-', lw=1)
+                                      color='black', ls='-', lw=1, alpha=0.1)
             c = c + 1
     else:
         SLOPE = - n_P2 / (n_P4-m*n_P2)
@@ -297,7 +304,8 @@ for [f_res, n_P2, n_P4] in fres_nP2_nP4:
 
 axes['Q1_dif_sim'].set_ylim(fp4_start, fp4_stop)
 axes['Q1_dif_sim'].set_xlim(-fp4_delta_span/2*1e3, fp4_delta_span/2*1e3)
-axes['Q1_dif_sim'].set_xlabel(r'$\Delta f_{P2}$ [MHz]')
+axes['Q1_dif_sim'].set_xlabel(r'$\Delta f_{\mathrm{P2}}$' +
+                              f' {unit_style("MHz")}')
 
 
 ax2 = axes['Q1_dif_sim'].twinx()
@@ -369,7 +377,7 @@ for [f_res, n_P2, n_P4] in fres_nP2_nP4:
         if abs(fp2_delta_vert) < fp4_delta_span/2*1e3:
             axes['Q2_dif_sim'].vlines(fp2_delta_vert, fp4_start, fp4_stop,
                                       label=f'{label_Q}^{label_P}, SLOPE = {SLOPE}',
-                                      color='black', ls='-', lw=1)
+                                      color='black', ls='-', lw=1, alpha=0.1)
             c = c + 1
     else:
         SLOPE = - n_P2 / (n_P4-m*n_P2)
@@ -386,7 +394,8 @@ for [f_res, n_P2, n_P4] in fres_nP2_nP4:
 
 axes['Q2_dif_sim'].set_ylim(fp4_start, fp4_stop)
 axes['Q2_dif_sim'].set_xlim(-fp4_delta_span/2*1e3, fp4_delta_span/2*1e3)
-axes['Q2_dif_sim'].set_xlabel(r'$\Delta f_{P2}$ [MHz]')
+axes['Q2_dif_sim'].set_xlabel(r'$\Delta f_{\mathrm{P2}}$' +
+                              f' {unit_style("MHz")}')
 
 ax2 = axes['Q2_dif_sim'].twinx()
 ax2.set_ylim(fp2_start, fp2_stop)
@@ -462,7 +471,7 @@ for [f_res, n_P2, n_P4] in fres_nP2_nP4:
         if abs(fp2_delta_vert) < fp4_delta_span/2*1e3:
             axes['Q2_sum_sim'].vlines(fp2_delta_vert, fp4_start, fp4_stop,
                                       label=f'{label_Q}^{label_P}, SLOPE = {SLOPE}',
-                                      color='black', ls='-', lw=1)
+                                      color='black', ls='-', lw=1, alpha=0.1)
             c = c + 1
     else:
         SLOPE = - n_P2 / (n_P4-m*n_P2)
@@ -479,11 +488,12 @@ for [f_res, n_P2, n_P4] in fres_nP2_nP4:
 
 axes['Q2_sum_sim'].set_ylim(fp4_start, fp4_stop)
 axes['Q2_sum_sim'].set_xlim(-fp4_delta_span/2*1e3, fp4_delta_span/2*1e3)
-axes['Q2_sum_sim'].set_xlabel(r'$\Delta f_{P2}$ [MHz]')
+axes['Q2_sum_sim'].set_xlabel(r'$\Delta f_{\mathrm{P2}}$' +
+                              f' {unit_style("MHz")}')
 
 ax2 = axes['Q2_sum_sim'].twinx()
 ax2.set_ylim(fp2_start, fp2_stop)
-ax2.set_ylabel(r'$f_{p2}$ (GHz)')
+ax2.set_ylabel(r'$f_{\mathrm{P2}}$ (GHz)')
 
 # *****************************************************************************
 # Plotting Rabi oscillations
@@ -513,7 +523,7 @@ for start_time_rabi in start_time_rabi_q1dif_list:
     ax2.plot(time, prob, color=colors[2+m])
     ax2.yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
     ax2.set_ylim(0.01, 0.99)
-    ax2.set_xlabel('time [ns]')
+    ax2.set_xlabel(f'time {unit_style("ns")}')
 
     for spine in ax2.spines.values():
         spine.set_edgecolor(colors[0])
@@ -552,7 +562,7 @@ for start_time_rabi in start_time_rabi_q2dif_list:
     ax3.plot(time, prob, color=colors[2+m])
     ax3.yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
     ax3.set_ylim(0.01, 0.99)
-    ax3.set_xlabel('time [ns]')
+    ax3.set_xlabel(f'time {unit_style("ns")}')
 
     for spine in ax3.spines.values():
         spine.set_edgecolor(colors[1])
@@ -591,7 +601,7 @@ for start_time_rabi in start_time_rabi_q2sum_list:
     ax4.plot(time, prob, color=colors[2+m])
     ax4.yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
     ax4.set_ylim(0.01, 0.99)
-    ax4.set_xlabel('time [ns]')
+    ax4.set_xlabel(f'time {unit_style("ns")}')
     for spine in ax4.spines.values():
         spine.set_edgecolor(colors[2])
 
@@ -616,6 +626,28 @@ axes["Q2_sum_sim"].set_yticklabels([])
 
 fig.tight_layout()
 plt.subplots_adjust(wspace=0.1, hspace=0.6)
-plt.savefig(os.path.join(save_path, 'FigureS5_more_Rabis.png'), dpi=300)
-plt.savefig(os.path.join(save_path, 'FigureS5_more_Rabis.pdf'), dpi=300)
+plt.savefig(os.path.join(save_path, 'FigureS6_more_Rabis.png'), dpi=300)
+plt.savefig(os.path.join(save_path, 'FigureS6_more_Rabis.pdf'), dpi=300)
+plt.show()
+
+# %% colorbar
+
+fig, ax = plt.subplots(figsize=cm2inch(2.0, 1.6), nrows=1)
+
+gradient = np.linspace(0, 1, 256)
+gradient = np.vstack((gradient, gradient))
+ax.imshow(gradient, aspect='auto', cmap=cm.cmap)
+pos = list(ax.get_position().bounds)
+ax.set_yticks([])
+ax.set_xticks([0, 256])
+ax.set_xlabel(r'$1 - P_{\downdownarrows}$')
+ax.tick_params(top=True, labeltop=True, bottom=False, labelbottom=False)
+ax.set_xticklabels([vmin, vmax])
+ax.xaxis.set_label_position('top')
+
+# ax.set_xticklabels([])
+# ax.set_xticks([])
+plt.tight_layout()
+plt.savefig(os.path.join(save_path, 'figureS6_cbar.pdf'),
+            dpi=300, transparent=True)
 plt.show()

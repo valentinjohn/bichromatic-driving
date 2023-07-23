@@ -19,10 +19,10 @@ save_path = get_save_path('Figure2')
 show_Rabi = False  # 3 different bichromatic Rabi drives with indication on color plot
 
 start_time = '2022-07-12\\17-59-02'
-datfile = load_data(start_time)
+datfile = load_dat(start_time)
 
 start_time2 = '2022-07-13\\17-27-20'
-datfile2 = load_data(start_time2)
+datfile2 = load_dat(start_time2)
 
 if show_Rabi:
     start_time_rabi_q1dif = '2022-07-13\\15-56-21'
@@ -33,7 +33,7 @@ if show_Rabi:
 
     datfile_rabi = {}
     for start_time_rabi in start_time_rabi_list:
-        datfile_rabi[start_time_rabi] = load_data(start_time_rabi)
+        datfile_rabi[start_time_rabi] = load_dat(start_time_rabi)
 
 # %% Calibrated Rabi frequencies
 
@@ -81,7 +81,7 @@ q2_sum_up = Q_sum(fp4_q2_sum, fq2+100e-3)
 # %% Plot settings
 
 figure_size = 'small'
-figsize = (1.5*fig_size_single, 4)
+figsize = (1.5*fig_size_single, 4.5)
 linestyles = ['-', ':', '--', '-.']
 colors = ['lightskyblue', 'purple', 'turquoise']
 vmin = 0
@@ -90,7 +90,7 @@ lw = 1
 
 # %% Plotting
 
-fig, [[ax1, ax_empty], [ax2, ax3]], = plt.subplots(2, 2, figsize=figsize,
+fig, [[ax1, ax2], [ax3, ax_empty]], = plt.subplots(2, 2, figsize=figsize,
                                                    sharex=True,
                                                    sharey=True)
 ax_empty.axis('off')
@@ -292,8 +292,6 @@ y = (Qj-C42*x)/C22
 
 ax2.set_xlabel(r'$f_{\mathrm{P4}}$' +
                f' {unit_style("GHz")}')
-ax2.set_ylabel('$f_{\mathrm{P2}}$' +
-               f' {unit_style("GHz")}')
 
 fontsize_text = 7
 
@@ -399,15 +397,15 @@ for i in pairs:
                 if anti[1] == 1:  # first order anticrossing, driven by P2
                     if anti[3] == 2:
                         if anti[2] == 'Ot':
-                            ax3.scatter(x, y, s=m, marker='x',
-                                        color='blue', zorder=2)
+                            strong_ac = ax3.scatter(x, y, s=m, marker='x',
+                                                    color='blue', zorder=2)
                         if anti[2] == 't2':
                             ax3.scatter(x, y, s=m, marker='x',
                                         color='blue', zorder=2)
                     else:  # first order anticrossing, driven by P4
                         if anti[2] == 'Ot':
-                            ax3.scatter(x, y, s=m, marker='x',
-                                        color='green', zorder=2)
+                            weak_ac = ax3.scatter(x, y, s=m, marker='x',
+                                                  color='green', zorder=2)
                         if anti[2] == 't2':
                             ax3.scatter(x, y, s=m, marker='x',
                                         color='green', zorder=2)
@@ -441,6 +439,8 @@ ax3.scatter(x, y, s=m, marker='x', color='green',
 
 ax3.set_xlabel(r'$f_{\mathrm{P4}}$' +
                f' {unit_style("GHz")}', fontsize=8)
+ax3.set_ylabel('$f_{\mathrm{P2}}$' +
+               f' {unit_style("GHz")}')
 
 ax3.arrow(1.75, 0.55, 0, 0.6,
           head_width=0.07,
@@ -468,12 +468,15 @@ ax2.set_xlim(0.9, 4.3)
 ax3.set_ylim(0.9, 3.5)
 ax3.set_xlim(0.9, 4.3)
 
-plt.legend(loc='upper left', bbox_to_anchor=(-0.13, 1.2),
-           fancybox=True, shadow=False, ncol=2)
+# ax2.legend(loc='upper left', bbox_to_anchor=(-0.13, 1.2),
+#            fancybox=True, shadow=False, ncol=2)
 
 ax1.tick_params(axis='y', pad=0.5)
 ax2.tick_params(axis='y', pad=0.5)
 ax3.tick_params(axis='y', pad=0.5)
+
+ax1.set_yticks([1, 2, 3])
+ax2.xaxis.set_tick_params(labelbottom=True)
 
 ax2.text(1.65, 1.25, r'$\mathrm{AC1}$', fontsize=fontsize_text)
 ax2.text(2.2, 1.2, r'$\mathrm{AC2}$', fontsize=fontsize_text)
@@ -484,34 +487,20 @@ ax3.text(3.35, 1.2, r'$\mathrm{AC5}$', fontsize=fontsize_text)
 
 
 # *****************************************************************************
+ax2.legend([strong_ac, weak_ac], ['strong AC', 'weak AC'], ncol=2,
+           loc='upper left', bbox_to_anchor=(0.1, 1.2))
 
 plt.tight_layout()
 plt.subplots_adjust(left=0.1,
                     bottom=0.05,
                     right=0.97,
                     top=0.95,
-                    hspace=-0.1,
-                    wspace=0.2)
+                    hspace=-0.2,
+                    wspace=0.1)
 plt.savefig(os.path.join(save_path, 'figure2_plots.png'), dpi=300)
 plt.savefig(os.path.join(save_path, 'figure2_plots.pdf'), dpi=300)
 plt.show()
 
-# %% create colorbar
-
-# Create a separate figure for the colorbar
-# Adjust the figsize as per your requirements
-fig_colorbar = plt.figure(figsize=(0.1, 1.2))
-ax_colorbar = fig_colorbar.add_subplot(111)
-
-# Define the colorbar properties
-cbar = plt.colorbar(cm, cax=ax_colorbar, orientation='vertical', shrink=0.05)
-cbar.ax.set_ylabel(r'$1 - P_{\downdownarrows}$')  # Set the desired label
-
-# Show the colorplot and the colorbar
-# plt.tight_layout()
-plt.savefig(os.path.join(save_path, 'figure2_cbar.pdf'),
-            dpi=300, transparent=True)
-plt.show()
 
 # %%
 

@@ -23,7 +23,7 @@ mixing_regime = ['difference', 'difference', 'sum']
 
 datfile = {}
 for start_time in start_time_list:
-    datfile[start_time] = load_data(start_time)
+    datfile[start_time] = load_dat(start_time)
 
 
 # %% Calibrated Rabi frequencies
@@ -55,8 +55,16 @@ ax_ticks = [[3.9, 4.2],
 ax2_ticks = [[1.1, 1.4, 1.7],
              [1.2, 1.7]]
 
-for start_time in start_time_list[1:]:
-    ax = fig1.add_subplot(gs1[:, n-1])
+ax1 = fig1.add_subplot(gs1[:, 0])
+ax2 = fig1.add_subplot(gs1[:, 2])
+ax3 = fig1.add_subplot(gs1[:, 1])
+ax4 = fig1.add_subplot(gs1[:, 3])
+ax7 = fig1.add_subplot(gs1[0, 4])
+ax8 = fig1.add_subplot(gs1[1, 4])
+axs = [ax1, ax2]
+
+for idx, start_time in enumerate(start_time_list[1:]):
+    ax = axs[idx]
 
     delta = datfile[start_time].delta_set.ndarray[0, :]
     mixing = datfile[start_time].mixing_set.ndarray
@@ -109,7 +117,6 @@ for start_time in start_time_list[1:]:
     n = n + 1
 
 n = 1
-ax3 = []
 
 x = np.linspace(-40*10**6, 38*10**6)
 y1 = get_fq1(-10)*10**9-x
@@ -120,11 +127,9 @@ y4 = get_fq2(-10)*10**9/2+x
 
 s = 0
 
-ax3 = fig1.add_subplot(gs1[:, 2])
 ax3.set_ylim(3.7, 4.395)
 ax3.set_xlim(-40, 40)
 
-ax4 = fig1.add_subplot(gs1[:, 3])
 ax4.set_ylim(0.8, 1.65)
 ax4.set_xlim(-39, 39)
 
@@ -240,9 +245,8 @@ fontsize_label_AC = 8
 #          fontsize=fontsize_label_AC, color='red')
 # ax3.text(-7, 3.8, '$\mathrm{AC_5}$', fontsize=fontsize_label_AC, color='red')
 
-axs = [0, 0]
+axs = [ax7, ax8]
 for n in range(2):
-    axs[n] = fig1.add_subplot(gs1[n, 4])
     axs[n].hlines(0, -5, -1, color='black')
     axs[n].hlines(0, 5, 1, color='black')
     axs[n].hlines(fq1, -5, -1, color='black')

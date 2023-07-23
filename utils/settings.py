@@ -14,7 +14,6 @@ import numpy as np
 import json
 import pandas as pd
 import matplotlib.pyplot as plt
-from utils.notebook_tools import get_data_from
 from matplotlib.ticker import MaxNLocator
 from matplotlib.gridspec import GridSpec
 from matplotlib.ticker import FormatStrFormatter
@@ -22,7 +21,6 @@ from matplotlib.ticker import MaxNLocator
 from mpl_toolkits.axes_grid1.axes_divider import make_axes_locatable
 import pickle
 from scipy.optimize import curve_fit
-from utils.notebook_tools import Rabi, Gauss, plot_sequence, get_mw_prop
 
 # %% defining style
 
@@ -50,7 +48,7 @@ color_Q1dif = 'violet'
 color_Q2dif = 'turquoise'
 color_Q2sum = 'lightskyblue'
 
-# %%
+# %% methods
 
 
 def unit_style(unit: str,

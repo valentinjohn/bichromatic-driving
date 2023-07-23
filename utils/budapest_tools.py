@@ -349,3 +349,32 @@ def anticrossing(trans1, trans2):
                 hop = 'Ot'
     # return if it is anticrossing, the order, the hopping parameters and the ep2 or ep4
     return [anti, order, hop, ep]
+
+
+# to not count twice the resonance points, which are both horizontal and vertical maximums
+def merge_lists(x1, x2, y1, y2):
+    # combine x1 and x2 and y1 and y2 into two separate lists
+    x = x1 + x2
+    y = y1 + y2
+
+    # create a dictionary to keep track of unique pairs
+    unique_pairs = {}
+
+    # iterate through both lists simultaneously
+    for i in range(len(x)):
+        # get the current pair of x and y values
+        pair = (x[i], y[i])
+
+        # check if the pair already exists in the dictionary
+        if pair in unique_pairs:
+            # if it does, skip it (we only want unique pairs)
+            continue
+        else:
+            # if it doesn't, add it to the dictionary
+            unique_pairs[pair] = True
+
+    # convert the dictionary keys back into separate lists
+    x = [pair[0] for pair in unique_pairs.keys()]
+    y = [pair[1] for pair in unique_pairs.keys()]
+
+    return x, y
