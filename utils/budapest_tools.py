@@ -60,6 +60,27 @@ def epsP2(f):
 
     return lista
 
+def Amplitude(f):
+    attenuation=np.loadtxt("attenuation.txt")
+    A=attenuation[1,:]*np.sqrt(2)
+    freq=attenuation[0,:]
+    n=105
+    A_first=A[0:n]
+    A_second=A[n:len(A)]
+    A_filtered1=savgol_filter(A_first,7,3)
+    A_filtered2=savgol_filter(A_second,65,3)
+    A_filtered1=np.array(A_filtered1)
+    A_filtered2=np.array(A_filtered2)
+
+    A_filtered=np.concatenate((A_filtered1,A_filtered2))
+
+    A_final=interp1d(freq,A_filtered,kind='cubic')
+    
+    lista=A_final(f)
+    lista=lista.astype(np.float64)
+
+    return lista
+
 
 def get_fq1(VP1):  # this function calculates the frequency of qubit 1 at different detunings (VP2=-VP1)
 
