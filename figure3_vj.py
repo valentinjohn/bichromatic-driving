@@ -183,18 +183,21 @@ O_avg=14.278008900473601
 
 b0 = b0_AC5
 b1 = b1_AC5
+x0_AC3 = -6.72780021*10**(-4)
+y0_AC3 = 4.23352197
 
-y_u=np.linspace(3.7,3.97,5000)
+x0_AC3=(b0_AC5+x0_AC3)/2
+b0_AC5=x0_AC3
+
+y_u=np.linspace(3.7,3.983,5000)
 y_d=np.linspace(3.7,3.92,5000)
 
 ax3.plot(x_curve_AC5_up(y_u,b0_AC5,b1_AC5,t_avg)*1000,y_u, color='black', linewidth=0.6)  # lower
 ax3.plot(x_curve_AC5_down(y_d,b0_AC5,b1_AC5,t_avg)*1000,y_d, color='black', linewidth=0.6)
 
-x0_AC3 = -6.72780021*10**(-4)
-y0_AC3 = 4.23352197
 tO_AC3=t_avg*O_avg
 
-y1=np.linspace(3.97,4.232,5000)
+y1=np.linspace(3.983,4.232,5000)
 y2=np.linspace(4.235,4.4,5000)
 ax3.plot(x_curve_AC3(y1, x0_AC3, y0_AC3, tO_AC3)*1000,y1,color='black', linewidth=0.6)  # uppper
 ax3.plot(x_curve_AC3(y2, x0_AC3, y0_AC3, tO_AC3)*1000,y2, color='black', linewidth=0.6)
@@ -203,17 +206,21 @@ ax3.set_title(r'$\mathrm{Q2^{-P2,P4}}$')
 x0_AC1 = -5.68320293*10**(-4)
 y0_AC1 = 1.50340012
 
-y1=np.linspace(1.145,1.5,5000)
+b0_AC4 = 0.0030126932276232947
+b1_AC4 = -1.0636075643177132
+tO_AC4=t_avg*O_avg
+
+b0_AC4=(b0_AC4+x0_AC1)/2
+x0_AC1=b0_AC4
+
+y1=np.linspace(1.231,1.5,5000)
 y2=np.linspace(1.506,1.7,5000)
 ax4.plot(x_curve_AC1(y1, x0_AC1, y0_AC1, t_avg)*1000,y1,color='black', linewidth=0.6)  # upper
 ax4.plot(x_curve_AC1(y2, x0_AC1, y0_AC1, t_avg)*1000,y2,color='black', linewidth=0.6)  # lower
 ax4.set_title(r'$\mathrm{Q2^{P2,P4}}$')
 
-b0_AC4 = 0.0030126932276232947
-b1_AC4 = -1.0636075643177132
-tO_AC4=t_avg*O_avg
 
-y_u=np.linspace(0.8,1.146,5000)
+y_u=np.linspace(0.8,1.231,5000)
 y_d=np.linspace(0.8,1.15,5000)
 
 ax4.plot(x_curve_AC4_up(y_u, b0_AC4, b1_AC4, tO_AC4)*1000,y_u,color='black', linewidth=0.6)  # lower
