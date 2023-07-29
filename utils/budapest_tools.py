@@ -8,25 +8,26 @@ Created on Mon Jun  5 19:39:38 2023
 # %% imports
 
 from scipy.constants import physical_constants
+from scipy.signal import find_peaks
 import numpy as np
 from scipy.signal import savgol_filter
+import scipy.interpolate
 from scipy.interpolate import interp1d
+from scipy.optimize import minimize
 
 # %% constants
 
 muB = physical_constants['Bohr magneton in Hz/T'][0] / 1e9
 B = 0.675
-g10 = 0.17439208  # g-factor
+g10 = 0.17439217   # g-factor
 
 c1 = -0.00104254
 d = -0.01145871
 a = 0.03582596
-g20 = 0.27062489
+g20 = 0.27062503
 c2 = -0.00142594
 aU = a*10**(-3)
 beta = 1.231-0.446
-t_avg = 13.3721499
-O_avg = 7.584879
 U = 2559.3078425900085
 alpha = U*a*10**(-3)
 
@@ -60,6 +61,29 @@ def epsP2(f):
 
     return lista
 
+def epsP4(f):
+    M14=0.353
+    M24=0.234
+    attenuation=np.loadtxt("attenuation.txt")
+    A=attenuation[1,:]*np.sqrt(2)
+    freq=attenuation[0,:]
+    n=105
+    A_first=A[0:n]
+    A_second=A[n:len(A)]
+    A_filtered1=savgol_filter(A_first,7,3)
+    A_filtered2=savgol_filter(A_second,65,3)
+    A_filtered1=np.array(A_filtered1)
+    A_filtered2=np.array(A_filtered2)
+
+    A_filtered=np.concatenate((A_filtered1,A_filtered2))
+
+    A_final=interp1d(freq,A_filtered,kind='cubic')
+    
+    lista=A_final(f)*alpha*(M14-M24)*1000
+    lista=lista.astype(np.float64)
+
+    return lista
+
 def Amplitude(f):
     attenuation=np.loadtxt("attenuation.txt")
     A=attenuation[1,:]*np.sqrt(2)
@@ -81,6 +105,14 @@ def Amplitude(f):
 
     return lista
 
+
+def fq1_fit(eps12,g10,c1,d,a):   #theoretical function for fQ1 
+    return muB*B*(g10+c1*eps12/2)+2*d*1/(1-a**2*eps12**2)
+
+def fq2_fit(eps12,g20,c2): #theoretical curve for the detuning dependence of fq2
+    d=-0.01145871
+    a=0.03582596
+    return muB*B*(g20+c2*eps12/2)+2*d*1/(1-a**2*eps12**2)
 
 def get_fq1(VP1):  # this function calculates the frequency of qubit 1 at different detunings (VP2=-VP1)
 
@@ -110,7 +142,6 @@ def EP2(f):  # frequency in GHz, EP2 in ueV, calculates the electric field of pl
 def x_curve_AC5_up(y_up,b0,b1,t):
     eps=20000*alpha
     fQ2=2.655
-    GammaU=121.28400326213747
     C=epsP2(y_up-fQ2)**2*U*(U**2+3*eps**2)/(U**2-eps**2)**3*0.2417990504*GammaU
     D=epsP2(y_up-fQ2)*2*U*eps/(U**2-eps**2)**2*0.2417990504
     a1=b0-C
@@ -122,7 +153,6 @@ def x_curve_AC5_up(y_up,b0,b1,t):
 def x_curve_AC5_down(y_down,b0,b1,t):
     eps=20000*alpha
     fQ2=2.655
-    GammaU=121.28400326213747
     C=epsP2(y_down-fQ2)**2*U*(U**2+3*eps**2)/(U**2-eps**2)**3*0.2417990504*GammaU
     D=epsP2(y_down-fQ2)*2*U*eps/(U**2-eps**2)**2*0.2417990504
     
@@ -136,7 +166,6 @@ def x_curve_AC5_down(y_down,b0,b1,t):
 def x_curve_AC3(y,x0,y0,tO):  #theoretical curve of the upper part of the attenuation, with 0 attenuation 
     eps=20000*alpha
     fQ2=2.655
-    GammaU=121.28400326213747
     C=epsP2(y-fQ2)**2*U*(U**2+3*eps**2)/(U**2-eps**2)**3*0.2417990504*GammaU
     D=epsP2(y-fQ2)*2*U*eps/(U**2-eps**2)**2*0.2417990504
     return D**2*tO**2/(y0-y)+x0+C
@@ -145,7 +174,6 @@ def x_curve_AC3(y,x0,y0,tO):  #theoretical curve of the upper part of the attenu
 def x_curve_AC1(y,x0,y0,t):  #theoretical curve of the upper part of the attenuation, with 0 attenuation 
     eps=20000*alpha
     fQ2=2.655
-    GammaU=121.28400326213747
     C=epsP2(fQ2-y)**2*U*(U**2+3*eps**2)/(U**2-eps**2)**3*0.2417990504*GammaU
     D=epsP2(fQ2-y)*2*U*eps/(U**2-eps**2)**2*0.2417990504
     return -D**2*t**4/(y0-y-C)+x0-C
@@ -155,7 +183,6 @@ def x_curve_AC4_down(y_down,b0,b1,tO):
     
     eps=20000*alpha
     fQ2=2.655
-    GammaU=121.28400326213747
     C=epsP2(fQ2-y_down)**2*U*(U**2+3*eps**2)/(U**2-eps**2)**3*0.2417990504*GammaU
     D=epsP2(fQ2-y_down)*2*U*eps/(U**2-eps**2)**2*0.2417990504
     
@@ -169,7 +196,6 @@ def x_curve_AC4_up(y_up,b0,b1,tO):
     
     eps=20000*alpha
     fQ2=2.655
-    GammaU=121.28400326213747
     C=epsP2(fQ2-y_up)**2*U*(U**2+3*eps**2)/(U**2-eps**2)**3*0.2417990504*GammaU
     D=epsP2(fQ2-y_up)*2*U*eps/(U**2-eps**2)**2*0.2417990504
     
@@ -178,6 +204,39 @@ def x_curve_AC4_up(y_up,b0,b1,tO):
     chi3=D*tO
     
     return (2*a1+a2-np.sqrt((2*a1-a2)**2+8*chi3**2))/4
+
+def x_curve_AC2(y,x0,y0,t,VP):  #theoretical curve of the upper part of the attenuation, with 0 attenuation 
+    eps=VP*alpha
+    fQ1=1.514
+    C=epsP2(y-fQ1)**2*U*(U**2+3*eps**2)/(U**2-eps**2)**3*0.2417990504*GammaU
+    D=epsP2(y-fQ1)*2*U*eps/(U**2-eps**2)**2*0.2417990504
+    return D**2*t**4/(y0-y-C)+x0+C
+
+def shared_objective_AC5(params, x1, x2, data1, data2):
+    b0 = params[0]
+    b1 = params[1]
+    t = params[2]
+
+    model1 = x_curve_AC5_up(x1,b0,b1,t)
+    model2 = x_curve_AC5_down(x2,b0,b1,t)
+
+    residuals1 = model1 - data1
+    residuals2 = model2 - data2
+
+    return np.sum(residuals1**2) + np.sum(residuals2**2)
+
+def shared_objective_AC4(params, x1, x2, data1, data2):
+    b0 = params[0]
+    b1 = params[1]
+    tO = params[2]
+
+    model1 = x_curve_AC4_up(x1,b0,b1,tO)
+    model2 = x_curve_AC4_down(x2,b0,b1,tO)
+
+    residuals1 = model1 - data1
+    residuals2 = model2 - data2
+
+    return np.sum(residuals1**2) + np.sum(residuals2**2)
 
 
 def plotting(x, ax, VP1, color):  # this function plots resonance lines
@@ -399,3 +458,19 @@ def merge_lists(x1, x2, y1, y2):
     y = [pair[1] for pair in unique_pairs.keys()]
 
     return x, y
+
+def t_to_O(t):
+    O=np.sqrt(t**2-GammaU)
+    return O
+
+def ueV_to_MHz(x):  #convert ueV to MHz 
+    return x*241799.0504*1000*10**(-6)
+
+def chi3_AC2(t,eps12,f):
+    eps=alpha*eps12
+    return abs(epsP2(f)*2*U*eps/(U**2-eps**2)**2*t**2)
+
+def chi3_fit(eps12,t):
+    f=1.1
+    eps=alpha*eps12
+    return abs(epsP2(f)*2*U*eps/(U**2-eps**2)**2*t**2)
