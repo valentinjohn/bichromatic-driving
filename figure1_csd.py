@@ -102,7 +102,7 @@ plt.plot([50, -50], [-50, 50], ls='-', c='black',
 # center 1,1 and operation point indication
 plt.scatter([0], [0], marker='.', color='black', zorder=2, s=50)
 plt.scatter([-10], [10], marker='*', color='white', edgecolor='black', linewidths=0.3,
-            zorder=2, label=r'$ε_{12}=-20$ mV', s=70)
+            zorder=2, label=r'$ϵ_{12}=-20$ mV', s=70)
 # ******************************************************************************
 
 xlabel = datfile.vP1_set.label + unit_style(datfile.vP1_set.unit, blank=True)

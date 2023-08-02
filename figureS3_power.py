@@ -98,7 +98,8 @@ fp2 = mixing
 
 cm = axes['spec'].pcolor(delta/1e6, fp2/1e9, datfile_Q1dif.su0,
                          shading='auto', cmap='hot', zorder=0,
-                         vmin=vmin, vmax=vmax)
+                         vmin=vmin, vmax=vmax,
+                         rasterized=True)
 # for spine in ax.spines.values():
 #     spine.set_edgecolor(colors[n])
 axes['spec'].set_xlabel(r'$\Delta f_{\mathrm{P2}}$' +
@@ -134,20 +135,22 @@ axes['pwr P4'].pcolor(time1,
                       power1,
                       datfile_fq1.su0,
                       shading='auto', cmap='hot',
-                      vmin=vmin, vmax=vmax)
+                      vmin=vmin, vmax=vmax,
+                      rasterized=True)
 axes['pwr P2'].pcolor(time2,
                       power2,
                       datfile_fq2.su0,
                       shading='auto', cmap='hot',
-                      vmin=vmin, vmax=vmax)
+                      vmin=vmin, vmax=vmax,
+                      rasterized=True)
 
 axes['pwr P2'].set_xticks([0, 200])
 axes['pwr P4'].set_xticks([0, 200])
 
-axes['pwr P4'].set_ylabel(r'$P_4$' +
+axes['pwr P4'].set_ylabel(r'$P_{\mathrm{P4}}$' +
                           f' {unit_style("dBm")}')
 axes['pwr P4'].set_xlabel(f'time {unit_style("ns")}')
-axes['pwr P2'].set_ylabel(r'$P_2$' +
+axes['pwr P2'].set_ylabel(r'$P_{\mathrm{P2}}$' +
                           f' {unit_style("dBm")}')
 axes['pwr P2'].set_xlabel(f'time {unit_style("ns")}')
 
