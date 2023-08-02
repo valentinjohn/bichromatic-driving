@@ -30,7 +30,7 @@ This repository contains all the scripts, data, and figures associated with our 
 
 3. **Data Retrieval**: All measurement data are stored in the `data/` folder, organized by the date of the measurement.
 
-4. **Figures**: The resulting figures are stored in the `Figures/` folder.
+4. **Figures**: The resulting figures are stored in the `Figures/` folder. Keep in mind that Figure S1 starts in SUPPLEMENTARY NOTE 2, such that the numbers do not correspond to one another.
 
 ## Dependencies
 
@@ -38,8 +38,8 @@ Make sure to install the required dependencies listed in the `requirements.txt` 
 
 ## Contact
 
-For any questions or additional information, please contact [Your Name and Email Address].
+For any questions or additional information, please contact Valentin John (V.John@tudelft.nl).
 
 ---
 
-_Last updated: [Date of Last Update]_
+_Last updated: 02/08/2023_
