@@ -199,13 +199,6 @@ att_rt2 = -20  # dB
 ydata2_dBm = combined_power + p_sig_gen2 + att_rt2
 ydata2_mV = dBm2V_conversion(ydata2_dBm)*1e3
 
-
-ydata3_dBm = att_tot + p_sig_gen2 + att_rt2
-ydata3_mV = dBm2V_conversion(ydata3_dBm)*1e3
-
-
-popt_cor, pcov_cor = curve_fit(ExpDec, xdata, ydata2_mV)
-
 ax1.plot(xdata[:-2], ydata2_dBm[:-2], label='data',
          marker='.', ls=None, markersize=0.1)
 ax1.plot(xdata, power(xdata, plunger='P4', P_siggen=2.5),
@@ -220,7 +213,6 @@ np.savetxt('attenuation.txt',[xdata[:-2],ydata2_mV[:-2]]) #save the data as a tx
 
 ax2.plot(xdata, dBm2V_conversion(power(xdata, plunger='P4', P_siggen=2.5))*1e3,
          label='fit', ls='--', lw='1', marker='.', markersize=0.1)
-
 
 ax1.legend()
 
