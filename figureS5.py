@@ -11,10 +11,10 @@ from utils.budapest_tools import *
 from utils.delft_tools import *
 
 # %% Save path
-save_path = get_save_path('FigureS6')
+save_path = get_save_path('FigureS5')
 
 # %% Import data
-attenuation = np.loadtxt("attenuation.txt")
+attenuation = np.loadtxt("data/attenuation_lovelace_fridge/attenuation.txt")
 A_RMS = attenuation[1, :]
 A = attenuation[1, :]*np.sqrt(2)
 freq = attenuation[0, :]
@@ -37,7 +37,7 @@ ax.plot(f, Amplitude(f), label='filtered data', linestyle='dashed')
 ax.set_xlabel(r'$f$ (GHz)')
 ax.set_ylabel(r'$A$ (mV)')
 ax.legend()
-plt.savefig(os.path.join(save_path, 'FigureS6.pdf'),
+plt.savefig(os.path.join(save_path, 'FigureS5.pdf'),
             dpi=300, transparent=True)
 
 print(f'A(f_Q1)={Amplitude(fq1):.1f}')

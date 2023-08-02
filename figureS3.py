@@ -11,7 +11,7 @@ from utils.settings import *
 from utils.delft_tools import *
 
 # %% Save path
-save_path = get_save_path('FigureS5')
+save_path = get_save_path('FigureS3')
 
 # %% Load data
 datfile = {}
@@ -213,7 +213,7 @@ axs[3, 1].set_xlabel('$f_{\mathrm{P2}}$' +
                      f' {unit_style("GHz")}')
 
 plt.tight_layout()
-plt.savefig(os.path.join(save_path, 'figureS5_exchange.pdf'), dpi=300)
-plt.savefig(os.path.join(save_path, 'figureS5_exchange.png'), dpi=300)
+plt.savefig(os.path.join(save_path, 'FigureS3_exchange.pdf'), dpi=300)
+plt.savefig(os.path.join(save_path, 'FigureS3_exchange.png'), dpi=300)
 
 plt.show()

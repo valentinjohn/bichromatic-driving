@@ -10,7 +10,7 @@ from utils.settings import *
 from utils.delft_tools import *
 
 # %% Save path
-save_path = get_save_path('FigureS3')
+save_path = get_save_path('FigureS1')
 
 # %% Load data
 
@@ -156,8 +156,8 @@ axes['pwr P2'].set_xlabel(f'time {unit_style("ns")}')
 
 
 plt.tight_layout()
-plt.savefig(os.path.join(save_path, 'figureS3_power.png'), dpi=300)
-plt.savefig(os.path.join(save_path, 'figureS3_power.pdf'), dpi=300)
+plt.savefig(os.path.join(save_path, 'FigureS1_power.png'), dpi=300)
+plt.savefig(os.path.join(save_path, 'FigureS1_power.pdf'), dpi=300)
 
 plt.show()
 
@@ -179,7 +179,7 @@ ax.xaxis.set_label_position('top')
 # ax.set_xticklabels([])
 # ax.set_xticks([])
 plt.tight_layout()
-plt.savefig(os.path.join(save_path, 'figureS3_cbar.pdf'),
+plt.savefig(os.path.join(save_path, 'FigureS1_cbar.pdf'),
             dpi=300, transparent=True)
 plt.show()
 

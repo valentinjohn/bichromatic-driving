@@ -10,7 +10,7 @@ from utils.settings import *
 from utils.delft_tools import *
 
 # %% Save path
-save_path = get_save_path('FigureS6')
+save_path = get_save_path('FigureS4')
 
 # %% load data
 START_TIME_Q1DIF = '2022-07-11\\13-12-41'
@@ -627,8 +627,8 @@ axes["Q2_sum_sim"].set_yticklabels([])
 
 fig.tight_layout()
 plt.subplots_adjust(wspace=0.1, hspace=0.6)
-plt.savefig(os.path.join(save_path, 'FigureS6_more_Rabis.png'), dpi=300)
-plt.savefig(os.path.join(save_path, 'FigureS6_more_Rabis.pdf'), dpi=300)
+plt.savefig(os.path.join(save_path, 'FigureS4_more_Rabis.png'), dpi=300)
+plt.savefig(os.path.join(save_path, 'FigureS4_more_Rabis.pdf'), dpi=300)
 plt.show()
 
 # %% colorbar
@@ -649,6 +649,6 @@ ax.xaxis.set_label_position('top')
 # ax.set_xticklabels([])
 # ax.set_xticks([])
 plt.tight_layout()
-plt.savefig(os.path.join(save_path, 'figureS6_cbar.pdf'),
+plt.savefig(os.path.join(save_path, 'FigureS4_cbar.pdf'),
             dpi=300, transparent=True)
 plt.show()

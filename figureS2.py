@@ -10,7 +10,7 @@ from utils.settings import *
 from utils.delft_tools import *
 
 # %% Save path
-save_path = get_save_path('FigureS4')
+save_path = get_save_path('FigureS2')
 
 # %% Load data
 
@@ -83,5 +83,5 @@ cbar.ax.set_yticks([0, 0.2, 0.4, 0.6])
 fig.tight_layout()
 
 
-plt.savefig(save_path+'\\FigureS4.png', dpi=300)
-plt.savefig(save_path+'\\FigureS4.pdf', dpi=300)
+plt.savefig(save_path+'\\FigureS2.png', dpi=300)
+plt.savefig(save_path+'\\FigureS2.pdf', dpi=300)
