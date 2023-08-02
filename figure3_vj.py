@@ -80,8 +80,9 @@ for idx, start_time in enumerate(start_time_list[1:]):
     fp2 = mixing
 
     cm = ax.pcolor(delta/1e6, fp2/1e9,
-                   datfile[start_time].su0, shading='auto', cmap='hot', zorder=0,
-                   vmin=vmin, vmax=vmax)
+                   datfile[start_time].su0, shading='auto', cmap='hot', zorder=1,
+                   vmin=vmin, vmax=vmax,
+                   rasterized=True)
 
     for spine in ax.spines.values():
         spine.set_edgecolor(colors[n])
@@ -178,29 +179,33 @@ ax5.plot(x*10**(-6), y2*10**(-9), color='black', linewidth=0.6)
 b0_AC5 = 0.0010462151634469613
 b1_AC5 = -3.7954007023595584
 
-t_avg=18.096097943069715
-O_avg=14.28528770225023
+t_avg = 18.096097943069715
+O_avg = 14.28528770225023
 
 b0 = b0_AC5
 b1 = b1_AC5
 x0_AC3 = -6.71550888*10**(-4)
 y0_AC3 = 4.23352195
 
-x0_AC3=(b0_AC5+x0_AC3)/2
-b0_AC5=x0_AC3
+x0_AC3 = (b0_AC5+x0_AC3)/2
+b0_AC5 = x0_AC3
 
-y_u=np.linspace(3.7,3.983,5000)
-y_d=np.linspace(3.7,3.92,5000)
+y_u = np.linspace(3.7, 3.983, 5000)
+y_d = np.linspace(3.7, 3.92, 5000)
 
-ax3.plot(x_curve_AC5_up(y_u,b0_AC5,b1_AC5,t_avg)*1000,y_u, color='black', linewidth=0.6)  # lower
-ax3.plot(x_curve_AC5_down(y_d,b0_AC5,b1_AC5,t_avg)*1000,y_d, color='black', linewidth=0.6)
+ax3.plot(x_curve_AC5_up(y_u, b0_AC5, b1_AC5, t_avg) *
+         1000, y_u, color='black', linewidth=0.6)  # lower
+ax3.plot(x_curve_AC5_down(y_d, b0_AC5, b1_AC5, t_avg)
+         * 1000, y_d, color='black', linewidth=0.6)
 
-tO_AC3=t_avg*O_avg
+tO_AC3 = t_avg*O_avg
 
-y1=np.linspace(3.983,4.232,5000)
-y2=np.linspace(4.235,4.4,5000)
-ax3.plot(x_curve_AC3(y1, x0_AC3, y0_AC3, tO_AC3)*1000,y1,color='black', linewidth=0.6)  # uppper
-ax3.plot(x_curve_AC3(y2, x0_AC3, y0_AC3, tO_AC3)*1000,y2, color='black', linewidth=0.6)
+y1 = np.linspace(3.983, 4.232, 5000)
+y2 = np.linspace(4.235, 4.4, 5000)
+ax3.plot(x_curve_AC3(y1, x0_AC3, y0_AC3, tO_AC3)*1000,
+         y1, color='black', linewidth=0.6)  # uppper
+ax3.plot(x_curve_AC3(y2, x0_AC3, y0_AC3, tO_AC3)
+         * 1000, y2, color='black', linewidth=0.6)
 ax3.set_title(r'$\mathrm{Q2^{-P2,P4}}$')
 
 x0_AC1 = -5.69716724*10**(-4)
@@ -208,23 +213,27 @@ y0_AC1 = 1.50339871
 
 b0_AC4 = 0.0030114560377269323
 b1_AC4 = -1.0636075790883823
-tO_AC4=t_avg*O_avg
+tO_AC4 = t_avg*O_avg
 
-b0_AC4=(b0_AC4+x0_AC1)/2
-x0_AC1=b0_AC4
+b0_AC4 = (b0_AC4+x0_AC1)/2
+x0_AC1 = b0_AC4
 
-y1=np.linspace(1.231,1.5,5000)
-y2=np.linspace(1.506,1.7,5000)
-ax4.plot(x_curve_AC1(y1, x0_AC1, y0_AC1, t_avg)*1000,y1,color='black', linewidth=0.6)  # upper
-ax4.plot(x_curve_AC1(y2, x0_AC1, y0_AC1, t_avg)*1000,y2,color='black', linewidth=0.6)  # lower
+y1 = np.linspace(1.231, 1.5, 5000)
+y2 = np.linspace(1.506, 1.7, 5000)
+ax4.plot(x_curve_AC1(y1, x0_AC1, y0_AC1, t_avg)*1000,
+         y1, color='black', linewidth=0.6)  # upper
+ax4.plot(x_curve_AC1(y2, x0_AC1, y0_AC1, t_avg)*1000,
+         y2, color='black', linewidth=0.6)  # lower
 ax4.set_title(r'$\mathrm{Q2^{P2,P4}}$')
 
 
-y_u=np.linspace(0.8,1.231,5000)
-y_d=np.linspace(0.8,1.15,5000)
+y_u = np.linspace(0.8, 1.231, 5000)
+y_d = np.linspace(0.8, 1.15, 5000)
 
-ax4.plot(x_curve_AC4_up(y_u, b0_AC4, b1_AC4, tO_AC4)*1000,y_u,color='black', linewidth=0.6)  # lower
-ax4.plot(x_curve_AC4_down(y_d, b0_AC4, b1_AC4, tO_AC4)*1000,y_d,color='black', linewidth=0.6)  # lower
+ax4.plot(x_curve_AC4_up(y_u, b0_AC4, b1_AC4, tO_AC4) *
+         1000, y_u, color='black', linewidth=0.6)  # lower
+ax4.plot(x_curve_AC4_down(y_d, b0_AC4, b1_AC4, tO_AC4) *
+         1000, y_d, color='black', linewidth=0.6)  # lower
 
 fontsize_label = 8
 fontsize_label_AC = 8

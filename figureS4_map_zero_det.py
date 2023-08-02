@@ -45,6 +45,7 @@ vmin = 0
 vmax = 0.6
 c = ax1.pcolor(P1_frequency, P2_frequency, datfile.su0-datfile.su0.min(),
                shading='auto', cmap='hot', zorder=1, vmin=vmin, vmax=vmax,
+               rasterized=True
                )
 
 ax1.set_ylabel('$f_{\mathrm{P2}}$' +

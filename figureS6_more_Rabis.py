@@ -179,8 +179,9 @@ for START_TIME in start_time_list:
         fq = fq2/1e9
 
     cm = ax.pcolor(delta/1e6, fp2/1e9, datfile[START_TIME].su0,
-                   shading='auto', cmap='hot', zorder=0,
-                   vmin=vmin, vmax=vmax)
+                   shading='auto', cmap='hot', zorder=1,
+                   vmin=vmin, vmax=vmax,
+                   rasterized=True)
 
     # divider = make_axes_locatable(ax)
     # cax = divider.append_axes("top", size="5%", pad="2%")

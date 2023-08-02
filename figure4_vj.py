@@ -50,7 +50,7 @@ vmin = 0.15
 vmax = 0.9
 
 VP1 = 1000*np.linspace(7, 11, 5)
-t_avg=18.096097943069715
+t_avg = 18.096097943069715
 
 y0s = [2.66626806,
        2.65246803,
@@ -66,12 +66,12 @@ x0s = [7.03532953*10**(-3),
 
 ts = [t_avg,
       t_avg,
-       t_avg,
-       t_avg,
-       t_avg]
+      t_avg,
+      t_avg,
+      t_avg]
 
 y1ds = [2.67,
-       2.655,
+        2.655,
         2.645,
         2.6277,
         2.6168]
@@ -103,8 +103,9 @@ for detuning in detuning_list:
     fp4 = abs(fp2 - fq)
 
     axs[n].pcolor(delta/1e6, fp2/1e9, datfile.su0,
-                  shading='auto', cmap='hot', zorder=0,
-                  vmin=vmin, vmax=vmax)
+                  shading='auto', cmap='hot', zorder=1,
+                  vmin=vmin, vmax=vmax,
+                  rasterized=True)
     axs[n].yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
     axs[n].tick_params('x', labelrotation=45)
     axs[n].set_xticks([-30, 0, +30])
@@ -116,8 +117,10 @@ for detuning in detuning_list:
     plotting(xi, axs[n], -11.0+n, color=color_Q2sum)
     y1 = np.linspace(y1ds[n], y1us[n], 5000)
     y2 = np.linspace(y2ds[n], y2us[n], 5000)
-    axs[n].plot(x_1(y1, x0s[n], y0s[n], ts[n],detuning[1]*1000)*1000, y1, color=color_Q2sum, linewidth=0.8, linestyle=(0, (3, 3)))
-    axs[n].plot(x_1(y2, x0s[n], y0s[n], ts[n],detuning[1]*1000)*1000, y2, color=color_Q2sum, linewidth=0.8, linestyle=(0, (3, 3)))
+    axs[n].plot(x_1(y1, x0s[n], y0s[n], ts[n], detuning[1]*1000)*1000,
+                y1, color=color_Q2sum, linewidth=0.8, linestyle=(0, (3, 3)))
+    axs[n].plot(x_1(y2, x0s[n], y0s[n], ts[n], detuning[1]*1000)*1000,
+                y2, color=color_Q2sum, linewidth=0.8, linestyle=(0, (3, 3)))
     axs[n].set_xlim(-40, 39)
     axs[n].set_ylim(2.3, 3.8)
 
