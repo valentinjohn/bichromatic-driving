@@ -22,6 +22,9 @@ from functools import partial
 import inspect
 import time
 
+import qcodes
+from qcodes.data.data_set import load_data
+
 # %% definitions
 
 
@@ -244,6 +247,81 @@ def DoubCoulomb(x, alpha, alpha2, Te, Te2, E0, E02, y0):
     return alpha*np.cosh((x-E0)/(2*Te*8.617e-2))**(-2)+alpha2*np.cosh((x-E02)/(2*Te2*8.617e-2))**(-2)+y0
 
 # %% notebook tools
+
+
+def get_data_from(start_time, end_time='now', num=np.inf,
+                  rootfolder=qcodes.data.data_set.DataSet.default_io.base_location,
+                  verbose=0, only_complete=True):
+    """
+    Read a number of consecutive datasets. arguments:
+        times:  time of first datset in %H-%M-%S format, or
+                datetime of first dataset (%Y-%m-%d\\%H-%M-%S), or
+                two element list with from and to datetimes
+        num:    max number of datasets
+        rootfolder: folder to scan for datasets
+        only_complete: only read finished datasets
+    """
+    datfiles = []
+    fnames = []
+
+    times = [start_time, end_time]
+
+    if isinstance(times, list):
+        try:
+            dtf = time.strptime(times[0], '%Y-%m-%d\\%H-%M-%S')
+        except ValueError as Err:
+            dtf = time.strptime(time.strftime(
+                '%Y-%m-%d\\') + times[0], '%Y-%m-%d\\%H-%M-%S')
+            logging.debug('defaulting dtf to today')
+
+        try:
+            dtt = time.strptime(times[1], '%Y-%m-%d\\%H-%M-%S')
+        except ValueError:
+            try:
+                dtt = time.strptime(time.strftime(
+                    '%Y-%m-%d\\') + times[1], '%Y-%m-%d\\%H-%M-%S')
+                logging.debug('defaulting dtt to today')
+            except ValueError:
+                dtt = time.localtime()
+                logging.debug('defaulting dtt to now')
+    else:
+        raise ValueError('Wrong input format.')
+    rfs = []
+    for fol in os.listdir(rootfolder):
+        try:
+            if dtt.tm_yday >= time.strptime(os.path.basename(
+                    fol), '%Y-%m-%d').tm_yday >= dtf.tm_yday:
+                rfs.append(rootfolder + '\\' + fol)
+        except ValueError as Err:
+            if verbose:
+                print(Err)
+
+    logging.debug('scanning folders %s' % str(rfs))
+    # print('dtt',dtt,'dtf',dtf)
+    for i, rf in enumerate(rfs):
+        for fol in os.listdir(rf):
+            try:
+                t = time.strptime(rf[-10:] + '\\' +
+                                  fol[0:8], '%Y-%m-%d\\%H-%M-%S')
+                if dtt >= t >= dtf and len(datfiles) < num:
+                    fnames.append(rf + '\\' + fol)
+                    try:
+                        datfiles.append(
+                            load_data(location=rf + '\\' + fol, formatter=None, io=None))
+
+                        if any([np.any(np.isnan(arr)) for arr in
+                                datfiles[-1].arrays.values()]) and only_complete:
+                            raise Exception('incomplete')
+                    except Exception as Ex:
+                        logging.info(
+                            'file %s seems to be broken or incomplete, omitting: %s' % (fnames[-1], str(Ex)))
+                        del datfiles[-1]
+                        del fnames[-1]
+            except ValueError as Err:
+                print(Err)
+    print('loaded %d files' % len(datfiles))
+    logging.debug('\n'.join(fnames))
+    return (datfiles, fnames)
 
 
 def get_mw_prop(datfile, gates: list, sig_gen_dict={'p1': 'sig_gen', 'p2': 'sig_gen3', 'p4': 'sig_gen2'}):
