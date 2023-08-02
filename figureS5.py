@@ -14,7 +14,7 @@ from utils.delft_tools import *
 save_path = get_save_path('FigureS6')
 
 # %% Import data
-attenuation = np.loadtxt("attenuation.txt")
+attenuation = np.loadtxt("data/attenuation_lovelace_fridge/attenuation.txt")
 A_RMS = attenuation[1, :]
 A = attenuation[1, :]*np.sqrt(2)
 freq = attenuation[0, :]
