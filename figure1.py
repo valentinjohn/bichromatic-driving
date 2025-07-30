@@ -14,6 +14,9 @@ from config import FIGURE_DIR
 
 # %% Save path
 save_path = FIGURE_DIR / 'Figure1'
+# CREATE SAVE PATH IF NOT EXIST
+if not os.path.exists(save_path):
+    os.makedirs(save_path)
 
 # %% Loading CSD data
 start_time = '2022-06-29\\22-16-44'
@@ -116,10 +119,6 @@ plt.ylim(-27, 27)
 plt.xlim(-27, 27)
 plt.legend(loc='upper center', bbox_to_anchor=(0.4, -0.3), ncol=2)
 plt.tight_layout()
-
-# CREATE SAVE PATH IF NOT EXIST
-if not os.path.exists(save_path):
-    os.makedirs(save_path)
 
 plt.savefig(os.path.join(save_path, 'figure1_csd.png'), dpi=300)
 plt.savefig(os.path.join(save_path, 'figure1_csd.pdf'), dpi=300)

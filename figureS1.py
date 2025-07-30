@@ -15,6 +15,9 @@ from config import FIGURE_DIR
 # %% Save path
 
 save_path = FIGURE_DIR / 'FigureS1'
+# CREATE SAVE PATH IF NOT EXIST
+if not os.path.exists(save_path):
+    os.makedirs(save_path)
 
 # %% Load data
 
@@ -161,10 +164,6 @@ axes['pwr P2'].set_xlabel(f'time {unit_style("ns")}')
 
 
 plt.tight_layout()
-
-# CREATE SAVE PATH IF NOT EXIST
-if not os.path.exists(save_path):
-    os.makedirs(save_path)
 
 plt.savefig(os.path.join(save_path, 'FigureS1_power.png'), dpi=300)
 plt.savefig(os.path.join(save_path, 'FigureS1_power.pdf'), dpi=300)

@@ -16,6 +16,9 @@ from config import FIGURE_DIR
 # %% Save path
 
 save_path = FIGURE_DIR / 'Figure4'
+# CREATE SAVE PATH IF NOT EXIST
+if not os.path.exists(save_path):
+    os.makedirs(save_path)
 
 # %% load data
 start_times = ['2022-07-11\\12-03-11',

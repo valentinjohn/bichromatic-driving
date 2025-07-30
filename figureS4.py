@@ -15,6 +15,9 @@ from config import FIGURE_DIR
 # %% Save path
 
 save_path = FIGURE_DIR / 'FigureS4'
+# CREATE SAVE PATH IF NOT EXIST
+if not os.path.exists(save_path):
+    os.makedirs(save_path)
 
 # %% load data
 START_TIME_Q1DIF = '2022-07-11\\13-12-41'
@@ -151,7 +154,7 @@ fig, axes = plt.subplot_mosaic([["Q1_dif", "Q1_dif_sim", "empty", "Q2_dif", "Q2_
                                 ["Rabi_Q1d3", "Rabi_Q1d3", "empty", "Rabi_Q2d3",
                                     "Rabi_Q2d3", "empty2", "Rabi_Q2s3", "Rabi_Q2s3"],
                                 ["Rabi_Q1d4", "Rabi_Q1d4", "empty", "Rabi_Q2d4", "Rabi_Q2d4", "empty2", "Rabi_Q2s4", "Rabi_Q2s4"]],
-                               figsize=(6, 8), sharex=False, sharey=False,
+                               figsize=cm2inch(15.24, 17.39), sharex=False, sharey=False,
                                gridspec_kw={'height_ratios': [6, 1, 1, 1, 1],
                                             'width_ratios': [1, 1, 1, 1, 1, 1, 1, 1]})
 
@@ -655,10 +658,6 @@ ax.xaxis.set_label_position('top')
 # ax.set_xticklabels([])
 # ax.set_xticks([])
 plt.tight_layout()
-
-# CREATE SAVE PATH IF NOT EXIST
-if not os.path.exists(save_path):
-    os.makedirs(save_path)
 
 plt.savefig(os.path.join(save_path, 'FigureS4_cbar.pdf'),
             dpi=300, transparent=True)

@@ -11,14 +11,17 @@ import __main__
 from utils.settings import *
 from utils.budapest_tools import *
 from utils.delft_tools import *
-from config import FIGURE_DIR
+from config import FIGURE_DIR, DATA_DIR
 
 # %% Save path
 
 save_path = FIGURE_DIR / 'FigureS5'
+# CREATE SAVE PATH IF NOT EXIST
+if not os.path.exists(save_path):
+    os.makedirs(save_path)
 
 # %% Import data
-attenuation = np.loadtxt("data/attenuation_lovelace_fridge/attenuation.txt")
+attenuation = np.loadtxt(DATA_DIR / "attenuation_lovelace_fridge" / "attenuation.txt")
 A_RMS = attenuation[1, :]
 A = attenuation[1, :]*np.sqrt(2)
 freq = attenuation[0, :]
@@ -41,10 +44,6 @@ ax.plot(f, Amplitude(f), label='filtered data', linestyle='dashed')
 ax.set_xlabel(r'$f$ (GHz)')
 ax.set_ylabel(r'$A$ (mV)')
 ax.legend()
-
-# CREATE SAVE PATH IF NOT EXIST
-if not os.path.exists(save_path):
-    os.makedirs(save_path)
 
 plt.savefig(os.path.join(save_path, 'FigureS5.pdf'),
             dpi=300, transparent=True)

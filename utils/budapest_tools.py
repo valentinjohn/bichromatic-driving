@@ -14,6 +14,7 @@ from scipy.signal import savgol_filter
 import scipy.interpolate
 from scipy.interpolate import interp1d
 from scipy.optimize import minimize
+from config import DATA_DIR
 
 # %% constants
 
@@ -93,8 +94,7 @@ def epsP4(f):
 
 
 def Amplitude(f):
-    attenuation = np.loadtxt(
-        "data/attenuation_lovelace_fridge/attenuation.txt")
+    attenuation = np.loadtxt(DATA_DIR / "attenuation_lovelace_fridge" / "attenuation.txt")
     A = attenuation[1, :]*np.sqrt(2)
     freq = attenuation[0, :]
     n = 105

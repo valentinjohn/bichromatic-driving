@@ -66,7 +66,7 @@ def load_dat(start_time):
 
 def load_cal_rabi_freq(vP1, vP2, P2_pwr, P4_pwr):
     script_dir = get_script_directory()
-    with open(os.path.join(script_dir, 'data\config_freq_rabi.txt'), "rb") as file:
+    with open(DATA_DIR / 'config_freq_rabi.txt', "rb") as file:
         config_freq_rabi = pickle.load(file)
 
     fq2p2 = config_freq_rabi['P2'][P2_pwr]['fq2'][(vP1, vP2)]
