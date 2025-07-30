@@ -6,8 +6,7 @@ Created on Wed Jul 13 08:22:42 2022
 """
 
 # %% Imports
-from matplotlib.colors import ListedColormap
-import matplotlib as mpl
+
 from utils.settings import *
 from utils.delft_tools import *
 from utils.budapest_tools import *
