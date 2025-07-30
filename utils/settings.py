@@ -44,9 +44,9 @@ plt.rcParams['axes.labelpad'] = 4  # -2
 color_P2 = '#668037'
 color_P4 = '#145972'
 
-color_Q1dif = 'violet'
-color_Q2dif = 'turquoise'
-color_Q2sum = 'lightskyblue'
+color_Q1dif = 'steelblue'
+color_Q2dif = 'violet'
+color_Q2sum = 'turquoise'
 
 # %% methods
 

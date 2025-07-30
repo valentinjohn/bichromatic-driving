@@ -16,7 +16,7 @@ from utils.budapest_tools import *
 save_path = get_save_path('Figure2')
 
 # %% Load data
-show_Rabi = False  # 3 different bichromatic Rabi drives with indication on color plot
+show_Rabi = True  # 3 different bichromatic Rabi drives with indication on color plot
 
 start_time = '2022-07-12\\17-59-02'
 datfile = load_dat(start_time)
@@ -24,16 +24,15 @@ datfile = load_dat(start_time)
 start_time2 = '2022-07-13\\17-27-20'
 datfile2 = load_dat(start_time2)
 
-if show_Rabi:
-    start_time_rabi_q1dif = '2022-07-13\\15-56-21'
-    start_time_rabi_q2dif = '2022-07-13\\14-27-14'
-    start_time_rabi_q2sum = '2022-07-13\\14-51-17'
-    start_time_rabi_list = [start_time_rabi_q1dif,
-                            start_time_rabi_q2dif, start_time_rabi_q2sum]
+start_time_rabi_q1dif = '2022-07-13\\15-56-21'
+start_time_rabi_q2dif = '2022-07-13\\14-27-14'
+start_time_rabi_q2sum = '2022-07-13\\14-51-17'
+start_time_rabi_list = [start_time_rabi_q1dif,
+                        start_time_rabi_q2dif, start_time_rabi_q2sum]
 
-    datfile_rabi = {}
-    for start_time_rabi in start_time_rabi_list:
-        datfile_rabi[start_time_rabi] = load_dat(start_time_rabi)
+datfile_rabi = {}
+for start_time_rabi in start_time_rabi_list:
+    datfile_rabi[start_time_rabi] = load_dat(start_time_rabi)
 
 # %% Calibrated Rabi frequencies
 
@@ -83,7 +82,7 @@ q2_sum_up = Q_sum(fp4_q2_sum, fq2+100e-3)
 figure_size = 'small'
 figsize = (1.5*fig_size_single, 4.5)
 linestyles = ['-', ':', '--', '-.']
-colors = ['lightskyblue', 'purple', 'turquoise']
+colors = [color_Q1dif, color_Q2dif, color_Q2sum]
 vmin = 0
 vmax = 0.6
 lw = 1
@@ -96,17 +95,17 @@ fig, [[ax1, ax2], [ax3, ax_empty]], = plt.subplots(2, 2, figsize=figsize,
 ax_empty.axis('off')
 
 cm = ax1.pcolor(P4_frequency, P2_frequency, problev, shading='auto',
-                cmap='hot', zorder=1, vmin=vmin, vmax=vmax)
+                cmap='hot', zorder=1, vmin=vmin, vmax=vmax, rasterized=True)
 # cbar = fig.colorbar(cm, fraction=0.03, shrink=1, pad=0.05, ax=ax_empty, location='right')
 # cbar.set_label(r'$1 - P_{\downdownarrows}$', rotation=0)
 
 ax1.pcolor(P4_frequency2, P2_frequency2, problev2, shading='auto',
-           cmap='hot', zorder=1, vmin=vmin, vmax=vmax)
+           cmap='hot', zorder=1, vmin=vmin, vmax=vmax, rasterized=True)
 
 ax1.set_ylabel('$f_{\mathrm{P2}}$' +
                f' {unit_style("GHz")}')
-# ax1.set_xlabel('$f_{\mathrm{P4}}$ unit_style(GHz)')
-
+ax1.set_xlabel('$f_{\mathrm{P4}}$' +
+               f' {unit_style("GHz")}')
 ax1.set_ylim(bottom=0)
 ax1.set_xlim(left=0)
 
@@ -116,18 +115,17 @@ ymax = 4.3e9
 xmax = 4.3e9
 # *****************************************************************************
 # Indication of position of 3 different bichromatic Rabi drives
-if show_Rabi:
-    n = 0
-    for start_time_rabi in start_time_rabi_list:
-        fp4 = np.round(datfile_rabi[start_time_rabi].metadata['station']
-                       ['instruments']['sig_gen2']['parameters']['frequency']
-                       ['value']/1e9, 3)
-        fp2 = np.round(datfile_rabi[start_time_rabi].metadata['station']
-                       ['instruments']['sig_gen3']['parameters']['frequency']
-                       ['value']/1e9, 3)
-        ax1.scatter([fp4], [fp2], s=50, zorder=1, marker='d',
-                    color=colors[n], edgecolors='black', clip_on=False)
+
+for n, start_time_rabi in enumerate(start_time_rabi_list[1:]):
     n = n + 1
+    fp4 = np.round(datfile_rabi[start_time_rabi].metadata['station']
+                   ['instruments']['sig_gen2']['parameters']['frequency']
+                   ['value']/1e9, 3)
+    fp2 = np.round(datfile_rabi[start_time_rabi].metadata['station']
+                   ['instruments']['sig_gen3']['parameters']['frequency']
+                   ['value']/1e9, 3)
+    ax1.scatter([fp4], [fp2], s=50, zorder=3, marker='d',
+                color=colors[n], edgecolors='black', clip_on=False)
 
 # *****************************************************************************
 
@@ -137,20 +135,20 @@ ax1.set_xlim(0.9, 4.2)
 
 # *****************************************************************************
 # Bichromatic line wrapper plot
-ax1.plot(fp4_q2_sum, q2_sum_low, lw=1, ls=linestyles[2], color='turquoise',
+ax1.plot(fp4_q2_sum, q2_sum_low, lw=1, ls=linestyles[2], color=color_Q2sum,
          zorder=2)
-ax1.plot(fp4_q2_sum, q2_sum_up, lw=1, ls=linestyles[2], color='turquoise',
+ax1.plot(fp4_q2_sum, q2_sum_up, lw=1, ls=linestyles[2], color=color_Q2sum,
          zorder=2)
 
-ax1.plot(fp4_q2_dif, q2_dif_low, lw=1, ls=linestyles[2], color='violet',
+ax1.plot(fp4_q2_dif, q2_dif_low, lw=1, ls=linestyles[2], color=color_Q2dif,
          zorder=2)
-ax1.plot(fp4_q2_dif, q2_dif_up, lw=1, ls=linestyles[2], color='violet',
+ax1.plot(fp4_q2_dif, q2_dif_up, lw=1, ls=linestyles[2], color=color_Q2dif,
          zorder=2)
 
 ax1.plot(fp4_q1_dif, q1_dif_low, lw=1, ls=linestyles[2],
-         color='lightskyblue', zorder=2)
+         color=color_Q1dif, zorder=2)
 ax1.plot(fp4_q1_dif, q1_dif_up, lw=1, ls=linestyles[2],
-         color='lightskyblue', zorder=2)
+         color=color_Q1dif, zorder=2)
 
 # *****************************************************************************
 
@@ -289,18 +287,24 @@ Qj = Q(3)
 x = (Qj-C22*Qi/C21)/(C42-C41*C22/C21)
 y = (Qj-C42*x)/C22
 
-
+ax2.set_ylabel('$f_{\mathrm{P2}}$' +
+               f' {unit_style("GHz")}')
 ax2.set_xlabel(r'$f_{\mathrm{P4}}$' +
                f' {unit_style("GHz")}')
 
 fontsize_text = 7
 
 ax2.text(1.1, 2, r'$\mathrm{Q1^{P4}}$', fontsize=fontsize_text)
+ax2.text(2.23, 2.95, r'$\mathrm{Q2^{P4}}$', fontsize=fontsize_text)
+
+ax2.text(1.65, 1.55, r'$\mathrm{Q1^{P2}}$', fontsize=fontsize_text)
+ax2.text(2.8, 2.7, r'$\mathrm{Q2^{P2}}$', fontsize=fontsize_text)
+
 ax2.text(0.85, 0.99, r'$\mathrm{Q2^{P2,P4}}$',
          fontsize=fontsize_text, rotation=-45)
 ax2.text(1.47, 1.49, r'$\mathrm{(Q1+Q2\_)^{P2,P4}}$',
          fontsize=fontsize_text, rotation=-45)
-ax2.text(2.23, 2.95, r'$\mathrm{Q2^{P4}}$', fontsize=fontsize_text)
+
 ax2.text(3.0, 1.65, r'$\mathrm{Q1^{-P2,P4}}$',
          fontsize=fontsize_text, rotation=45)
 
@@ -386,10 +390,10 @@ for i in pairs:
                         # second order anticrossing driven by P2
                         ax3.scatter(x, y, s=m, marker='x',
                                     color='green', zorder=2)
-                    if anti[3] == 4:
-                        # second order anticrossing driven by P4
-                        ax3.scatter(x, y, s=m, marker='x',
-                                    color='green', zorder=2)
+                    # if anti[3] == 4:
+                    #     # second order anticrossing driven by P4
+                    #     ax3.scatter(x, y, s=m, marker='x',
+                    #                 color='green', zorder=2)
                     if anti[3] == 0:
                         # second order anticrossing driven by P4
                         ax3.scatter(x, y, s=m, marker='x',
@@ -402,13 +406,13 @@ for i in pairs:
                         if anti[2] == 't2':
                             ax3.scatter(x, y, s=m, marker='x',
                                         color='blue', zorder=2)
-                    else:  # first order anticrossing, driven by P4
-                        if anti[2] == 'Ot':
-                            weak_ac = ax3.scatter(x, y, s=m, marker='x',
-                                                  color='green', zorder=2)
-                        if anti[2] == 't2':
-                            ax3.scatter(x, y, s=m, marker='x',
-                                        color='green', zorder=2)
+                    # else:  # first order anticrossing, driven by P4
+                    #     if anti[2] == 'Ot':
+                    #         weak_ac = ax3.scatter(x, y, s=m, marker='x',
+                    #                               color='green', zorder=2)
+                        # if anti[2] == 't2':
+                        #     ax3.scatter(x, y, s=m, marker='x',
+                        #                 color='green', zorder=2)
 
 
 x = intersection([2, 1, 3], [1, 1, 2])[0]
@@ -432,13 +436,13 @@ ax3.scatter(x, y, s=m, marker='x', color='blue',
 x = intersection([-1, 1, 2], [-2, 1, 1])[0]
 y = intersection([-1, 1, 2], [-2, 1, 1])[1]
 
-x = intersection([1, -1, 2], [1, -2, 1])[0]
-y = intersection([1, -1, 2], [1, -2, 1])[1]
-ax3.scatter(x, y, s=m, marker='x', color='green',
-            zorder=2, label='weak anticrossing')
+# x = intersection([1, -1, 2], [1, -2, 1])[0]
+# y = intersection([1, -1, 2], [1, -2, 1])[1]
+# ax3.scatter(x, y, s=m, marker='x', color='green',
+#             zorder=2, label='weak anticrossing')
 
 ax3.set_xlabel(r'$f_{\mathrm{P4}}$' +
-               f' {unit_style("GHz")}', fontsize=8)
+               f' {unit_style("GHz")}')
 ax3.set_ylabel('$f_{\mathrm{P2}}$' +
                f' {unit_style("GHz")}')
 
@@ -476,7 +480,10 @@ ax2.tick_params(axis='y', pad=0.5)
 ax3.tick_params(axis='y', pad=0.5)
 
 ax1.set_yticks([1, 2, 3])
+ax2.set_yticks([1, 2, 3])
+ax1.xaxis.set_tick_params(labelbottom=True)
 ax2.xaxis.set_tick_params(labelbottom=True)
+ax2.yaxis.set_tick_params(labelbottom=True)
 
 ax2.text(1.65, 1.25, r'$\mathrm{AC1}$', fontsize=fontsize_text)
 ax2.text(2.2, 1.2, r'$\mathrm{AC2}$', fontsize=fontsize_text)
@@ -487,16 +494,16 @@ ax3.text(3.35, 1.2, r'$\mathrm{AC5}$', fontsize=fontsize_text)
 
 
 # *****************************************************************************
-ax2.legend([strong_ac, weak_ac], ['strong AC', 'weak AC'], ncol=2,
-           loc='upper left', bbox_to_anchor=(0.1, 1.2))
+# ax2.legend([strong_ac, weak_ac], ['strong AC', 'weak AC'], ncol=2,
+#            loc='upper left', bbox_to_anchor=(0.1, 1.2))
 
 plt.tight_layout()
 plt.subplots_adjust(left=0.1,
                     bottom=0.05,
                     right=0.97,
                     top=0.95,
-                    hspace=-0.2,
-                    wspace=0.1)
+                    hspace=-0.05,
+                    wspace=0.3)
 plt.savefig(os.path.join(save_path, 'figure2_plots.png'), dpi=300)
 plt.savefig(os.path.join(save_path, 'figure2_plots.pdf'), dpi=300)
 plt.show()
@@ -533,50 +540,49 @@ plt.show()
 
 
 # %% Plotting Rabi drives in seperate plot
+save = True
+fig, axs = plt.subplots(2, 1, figsize=(
+    0.38*fig_size_single, 2.06), sharey=True)
 
-if show_Rabi:
-    colors = ['lightskyblue', 'purple', 'turquoise']
-    fig, axs = plt.subplots(3, figsize=(fig_size_single/2, 3))
+p0_list = [[0.5, 0.006, 0.1, 0.55, np.pi],
+           [0.2, 1/500, 0.2, 0.55, np.pi],
+           [0.4, 1/200, 0.12, 0.55, np.pi]]
 
-    m = 0
-    p0_list = [[0.5, 0.006, 0.1, 0.55, np.pi],
-               [0.2, 1/500, 0.2, 0.55, np.pi],
-               [0.4, 1/200, 0.12, 0.55, np.pi]]
+for n, start_time_rabi in enumerate(start_time_rabi_list[1:]):
+    m = n + 1
+    time = np.array(datfile_rabi[start_time_rabi].time_set)
+    prob = np.array(datfile_rabi[start_time_rabi].su0)
 
-    for start_time_rabi in start_time_rabi_list:
-        time = np.array(datfile_rabi[start_time_rabi].time_set)
-        prob = np.array(datfile_rabi[start_time_rabi].su0)
+    fp4 = np.round(datfile_rabi[start_time_rabi].metadata['station']
+                   ['instruments']['sig_gen2']['parameters']['frequency']
+                   ['value']/1e9, 3)
+    fp2 = np.round(datfile_rabi[start_time_rabi].metadata['station']
+                   ['instruments']['sig_gen3']['parameters']['frequency']
+                   ['value']/1e9, 3)
+    print((fp4, fp2))
 
-        fp4 = np.round(datfile_rabi[start_time_rabi].metadata['station']
-                       ['instruments']['sig_gen2']['parameters']['frequency']
-                       ['value']/1e9, 3)
-        fp2 = np.round(datfile_rabi[start_time_rabi].metadata['station']
-                       ['instruments']['sig_gen3']['parameters']['frequency']
-                       ['value']/1e9, 3)
-        print((fp4, fp2))
+    popt, pcov = curve_fit(Rabi, time, prob, p0=p0_list[m])
+    perr = np.sqrt(np.diag(pcov))
+    crop = 1
 
-        popt, pcov = curve_fit(Rabi, time, prob, p0=p0_list[m])
-        perr = np.sqrt(np.diag(pcov))
-        crop = 1
+    axs[n].plot(time, prob, color=colors[m])
+    axs[n].plot(time[crop:], Rabi(time, *popt)[crop:], 'black', lw=0.5,
+                label=r'fit: A=%5.3f, f=%5.6f, $\alpha$=%5.3f, $y_0$=%5.3f, , $\phi$=%5.3f' % tuple(popt))
+    # print(r'fit: A=%5.3f, f=%5.6f, $\alpha$=%5.4f, $y_0$=%5.3f, , $\phi$=%5.3f' % tuple(popt))
+    # print(r'fit std: sigA=%5.3f, sigf=%5.6f, $sig\alpha$=%5.4f, $sigy_0$=%5.3f, , $sig\phi$=%5.3f' % tuple(perr))
 
-        axs[m].plot(time, prob, color=colors[m])
-        axs[m].plot(time[crop:], Rabi(time, *popt)[crop:], 'black', lw=0.5,
-                    label=r'fit: A=%5.3f, f=%5.6f, $\alpha$=%5.3f, $y_0$=%5.3f, , $\phi$=%5.3f' % tuple(popt))
-        # print(r'fit: A=%5.3f, f=%5.6f, $\alpha$=%5.4f, $y_0$=%5.3f, , $\phi$=%5.3f' % tuple(popt))
-        # print(r'fit std: sigA=%5.3f, sigf=%5.6f, $sig\alpha$=%5.4f, $sigy_0$=%5.3f, , $sig\phi$=%5.3f' % tuple(perr))
+    axs[n].set_ylim(0.1, 0.9)
+    axs[n].set_xlabel(f'time {unit_style("ns")}')
+    axs[n].xaxis.set_major_locator(MaxNLocator(2))
+    # axs[n].tick_params(axis='x', labelrotation=45)
+    for spine in axs[n].spines.values():
+        spine.set_edgecolor(colors[m])
 
-        axs[m].set_ylim(0.1, 0.9)
-        axs[m].set_xlabel('time [ns]')
-        axs[m].xaxis.set_major_locator(MaxNLocator(3))
-        for spine in axs[m].spines.values():
-            spine.set_edgecolor(colors[m])
+    axs[n].set_ylabel(r'$1-P_{\downdownarrows}$')
+fig.tight_layout()
 
-        axs[m].set_ylabel(r'$1-P_{\downdownarrows}$')
-        m = m + 1
-    fig.tight_layout()
-
-    if save:
-        plt.savefig(os.path.join(save_path, 'figure2b.png'), dpi=300)
-        plt.savefig(os.path.join(save_path, 'figure2b.png'), dpi=300)
-    fig.tight_layout()
-    plt.show()
+if save:
+    plt.savefig(os.path.join(save_path, 'figure2b.pdf'),
+                dpi=300, transparent=True)
+fig.tight_layout()
+plt.show()

@@ -37,13 +37,17 @@ Q2 = 2.655
 Q2b = 2.714
 GammaU = 121.28400326213747
 
+color_mono = 'darkred'
+color_bi = 'gold'
+color_tri = 'forestgreen'
+
 # %% Definitions
 
 
 def epsP2(f):
     M12 = 0.446
     M22 = 1.231
-    attenuation = np.loadtxt("attenuation.txt")
+    attenuation = np.loadtxt("utils\\attenuation.txt")
     A = attenuation[1, :]*np.sqrt(2)
     freq = attenuation[0, :]
     n = 105
@@ -284,12 +288,12 @@ def mono(P, f, ax2):  # P is either 2 or 4, f can be Q1, Q2 or Q1+Q2b
         x0 = 0
         x = 5
         # plots the monochromatic resonance line
-        ax2.plot([x0, x], [y, y], color='brown', linewidth=1)
+        ax2.plot([x0, x], [y, y], color=color_mono, linewidth=1)
     else:  # if plunger P4 is used
         x = f
         y0 = 0
         y = 5
-        ax2.plot([x, x], [y0, y], color='brown', linewidth=1)
+        ax2.plot([x, x], [y0, y], color=color_mono, linewidth=1)
 
 
 def Q(i):  # function that returns the Q as a function of an index
@@ -319,7 +323,7 @@ def bichro(C2, C4, i, ax2):  # c2*fp2+c4*fp4=Q_i, Q1, Q2 and Q1+Q2_ are the thre
     if i == 3:
         f = Q1+Q2b
     I = np.array([0, 5])
-    ax2.plot(I, fp2(C2, C4, f, I), color='orange', zorder=1,
+    ax2.plot(I, fp2(C2, C4, f, I), color=color_bi, zorder=1,
              linewidth=1)  # plot of the resonance line
 
 
@@ -331,7 +335,7 @@ def bichro2(C2, C4, i, ax3):  # c2*fp2+c4*fp4=Q_i, Q1, Q2 and Q1+Q2_ are the thr
     if i == 3:
         f = Q1+Q2b
     I = np.array([0, 5])
-    ax3.plot(I, fp2(C2, C4, f, I), color='orange', zorder=1,
+    ax3.plot(I, fp2(C2, C4, f, I), color=color_bi, zorder=1,
              linewidth=1)  # plot of the resonance line
 
 
@@ -344,7 +348,7 @@ def trichro(line, ax3):  # line has the form [C2,C4,Qi], Qi has value 1,2 or 3
     I = np.array([0, 5])
     y = (Qi-C4*I)/C2  # y interval
     # plot of the resonance line
-    ax3.plot(I, y, color='violet', zorder=1, linewidth=1)
+    ax3.plot(I, y, color=color_tri, zorder=1, linewidth=1)
 
 
 # calculates the intersection point of two transitions (both are at least bichromatic)
