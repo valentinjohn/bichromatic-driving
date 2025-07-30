@@ -11,9 +11,11 @@ import __main__
 import numpy as np
 from utils.settings import *
 from utils.delft_tools import *
+from config import FIGURE_DIR
 
 # %% Save path
-save_path = get_save_path('FigureS3')
+
+save_path = FIGURE_DIR / 'FigureS3'
 
 # %% Load data
 datfile = {}
@@ -215,6 +217,11 @@ axs[3, 1].set_xlabel('$f_{\mathrm{P2}}$' +
                      f' {unit_style("GHz")}')
 
 plt.tight_layout()
+
+# CREATE SAVE PATH IF NOT EXIST
+if not os.path.exists(save_path):
+    os.makedirs(save_path)
+
 plt.savefig(os.path.join(save_path, 'FigureS3_exchange.pdf'), dpi=300)
 plt.savefig(os.path.join(save_path, 'FigureS3_exchange.png'), dpi=300)
 

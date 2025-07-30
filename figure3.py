@@ -11,9 +11,11 @@ import __main__
 from utils.settings import *
 from utils.delft_tools import *
 from utils.budapest_tools import *
+from config import FIGURE_DIR
 
 # %% Save path
-save_path = get_save_path('Figure3')
+
+save_path = FIGURE_DIR / 'Figure3'
 
 # %% load data
 start_time_q1dif = '2022-07-11\\13-12-41'
@@ -330,6 +332,11 @@ ax.xaxis.set_label_position('top')
 # ax.set_xticklabels([])
 # ax.set_xticks([])
 plt.tight_layout()
+
+# CREATE SAVE PATH IF NOT EXIST
+if not os.path.exists(save_path):
+    os.makedirs(save_path)
+
 plt.savefig(os.path.join(save_path, 'figure3_cbar.pdf'),
             dpi=300, transparent=True)
 if hasattr(__main__, '__file__') is False:

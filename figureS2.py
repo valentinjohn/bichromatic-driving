@@ -10,9 +10,11 @@ Created on Wed Jul 13 08:22:42 2022
 import __main__
 from utils.settings import *
 from utils.delft_tools import *
+from config import FIGURE_DIR
 
 # %% Save path
-save_path = get_save_path('FigureS2')
+
+save_path = FIGURE_DIR / 'FigureS2'
 
 # %% Load data
 
@@ -83,6 +85,10 @@ cbar.ax.set_yticks([0, 0.2, 0.4, 0.6])
 # ax1.plot([fq1+100e-3,4*fq1+100e-3], [0,3*fq1], lw = 1, ls=linestyles[2], color='lightskyblue', zorder=2)
 
 fig.tight_layout()
+
+# CREATE SAVE PATH IF NOT EXIST
+if not os.path.exists(save_path):
+    os.makedirs(save_path)
 
 plt.savefig(save_path+'\\FigureS2.png', dpi=300)
 plt.savefig(save_path+'\\FigureS2.pdf', dpi=300)

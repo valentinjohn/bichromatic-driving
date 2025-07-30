@@ -3,15 +3,16 @@ import zipfile
 import io
 import os
 from pathlib import Path
+from config import DATA_DIR
 
 # === Settings ===
 zip_url = "https://data.4tu.nl/file/bb43fe1d-f503-49e8-9f17-ce7d734f015d/6ade02b4-3aaa-4e6a-bb92-232b4580d100"
 target_subfolder = "bichromatic-driving/data/"                         # ← the folder inside the ZIP to extract
-output_folder = "data"                   # ← destination folder
+# output_folder = "data"                   # ← destination folder
 
 # === Resolve paths ===
 script_dir = Path(__file__).parent.resolve()
-extract_dir = script_dir / output_folder
+extract_dir = DATA_DIR #script_dir / output_folder
 extract_dir.mkdir(parents=True, exist_ok=True)
 
 # check whether data has already been downloaded

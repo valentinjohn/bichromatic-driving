@@ -24,6 +24,7 @@ import time
 
 import qcodes
 from qcodes.data.data_set import load_data
+from config import DATA_DIR
 
 # %% definitions
 
@@ -56,9 +57,9 @@ def get_save_path(figure_name: str):
 def load_dat(start_time):
     script_dir = get_script_directory()
     end_time = start_time
-    datadir = os.path.join(script_dir, 'data')
+    # datadir = os.path.join(script_dir, 'data')
     datfiles, fnames = get_data_from(
-        start_time, end_time, num=1, rootfolder=datadir, only_complete=False)
+        start_time, end_time, num=1, rootfolder=str(DATA_DIR), only_complete=False)
     datfile = datfiles[0]
     return datfile
 

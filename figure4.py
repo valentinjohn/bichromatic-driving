@@ -11,9 +11,11 @@ import __main__
 from utils.settings import *
 from utils.delft_tools import *
 from utils.budapest_tools import *
+from config import FIGURE_DIR
 
 # %% Save path
-save_path = get_save_path('Figure4')
+
+save_path = FIGURE_DIR / 'Figure4'
 
 # %% load data
 start_times = ['2022-07-11\\12-03-11',
@@ -166,6 +168,10 @@ plt.subplots_adjust(left=0.07,
 plt.tight_layout(w_pad=-0.5)
 if hasattr(__main__, '__file__') is False:
     plt.show()
+
+# CREATE SAVE PATH IF NOT EXIST
+if not os.path.exists(save_path):
+    os.makedirs(save_path)
 
 fig.savefig(os.path.join(save_path, 'Figure4_overlayed.pdf'),
             format='pdf', dpi=300, bbox_inches="tight")

@@ -11,9 +11,11 @@ import __main__
 from utils.settings import *
 from utils.delft_tools import *
 from utils.budapest_tools import *
+from config import FIGURE_DIR
 
 # %% Save path
-save_path = get_save_path('Figure2')
+
+save_path = FIGURE_DIR / 'Figure2'
 
 # %% Load data
 show_Rabi = True  # 3 different bichromatic Rabi drives with indication on color plot
@@ -586,6 +588,10 @@ for n, start_time_rabi in enumerate(start_time_rabi_list[1:]):
 fig.tight_layout()
 
 if save:
+    # CREATE SAVE PATH IF NOT EXIST
+    if not os.path.exists(save_path):
+        os.makedirs(save_path)
+
     plt.savefig(os.path.join(save_path, 'figure2b.pdf'),
                 dpi=300, transparent=True)
 fig.tight_layout()
