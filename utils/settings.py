@@ -50,7 +50,6 @@ color_Q2sum = 'turquoise'
 
 # %% methods
 
-
 def unit_style(unit: str,
                style='()',
                blank=False):
