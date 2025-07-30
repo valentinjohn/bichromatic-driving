@@ -6,6 +6,8 @@ Created on Mon Jul 11 10:59:25 2022
 """
 
 # %% Imports
+
+import __main__
 from utils.settings import *
 from utils.delft_tools import *
 from utils.budapest_tools import *
@@ -302,12 +304,13 @@ plt.subplots_adjust(left=0.07,
                     top=0.94,
                     hspace=0)
 
-fig1.tight_layout()
+# fig1.tight_layout()
 gs1.tight_layout(fig1)
 plt.savefig(os.path.join(save_path, 'figure3a.png'), dpi=300)
 plt.savefig(os.path.join(save_path, 'figure3a.pdf'), dpi=300)
 # plt.savefig(os.path.join(save_path, 'figure3a.svg'), dpi=300)
-plt.show()
+if hasattr(__main__, '__file__') is False:
+    plt.show()
 
 # %% colorbar
 
@@ -329,4 +332,5 @@ ax.xaxis.set_label_position('top')
 plt.tight_layout()
 plt.savefig(os.path.join(save_path, 'figure3_cbar.pdf'),
             dpi=300, transparent=True)
-plt.show()
+if hasattr(__main__, '__file__') is False:
+    plt.show()

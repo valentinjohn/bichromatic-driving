@@ -6,6 +6,8 @@ Created on Mon Jul 11 10:59:25 2022
 """
 
 # %% Imports
+
+import __main__
 from utils.settings import *
 from utils.delft_tools import *
 
@@ -629,7 +631,9 @@ fig.tight_layout()
 plt.subplots_adjust(wspace=0.1, hspace=0.6)
 plt.savefig(os.path.join(save_path, 'FigureS4_more_Rabis.png'), dpi=300)
 plt.savefig(os.path.join(save_path, 'FigureS4_more_Rabis.pdf'), dpi=300)
-plt.show()
+
+if hasattr(__main__, '__file__') is False:
+    plt.show()
 
 # %% colorbar
 
@@ -651,4 +655,6 @@ ax.xaxis.set_label_position('top')
 plt.tight_layout()
 plt.savefig(os.path.join(save_path, 'FigureS4_cbar.pdf'),
             dpi=300, transparent=True)
-plt.show()
+
+if hasattr(__main__, '__file__') is False:
+    plt.show()

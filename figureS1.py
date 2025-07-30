@@ -6,6 +6,8 @@ Created on Thu Sep 22 11:27:48 2022
 """
 
 # %% Imports
+
+import __main__
 from utils.settings import *
 from utils.delft_tools import *
 
@@ -51,7 +53,8 @@ if plot_seq:
                color='black', label='(-12,12)')
     plt.hlines(-12, 3.4e4, 3.7e4, ls='--', lw=1, color='black')
     plt.legend()
-    plt.show()
+    if hasattr(__main__, '__file__') is False:
+        plt.show()
 
 mw_prop = get_mw_prop(datfile_fq2, ['p2', 'p4'])
 # mw_prop = get_mw_prop(datfile_fq1, ['p2', 'p4'])
@@ -159,7 +162,8 @@ plt.tight_layout()
 plt.savefig(os.path.join(save_path, 'FigureS1_power.png'), dpi=300)
 plt.savefig(os.path.join(save_path, 'FigureS1_power.pdf'), dpi=300)
 
-plt.show()
+if hasattr(__main__, '__file__') is False:
+    plt.show()
 
 # %% colorbar
 
@@ -181,7 +185,8 @@ ax.xaxis.set_label_position('top')
 plt.tight_layout()
 plt.savefig(os.path.join(save_path, 'FigureS1_cbar.pdf'),
             dpi=300, transparent=True)
-plt.show()
+if hasattr(__main__, '__file__') is False:
+    plt.show()
 
 
 # %% Plot traces of power sweep with Rabi fit
@@ -225,7 +230,8 @@ for m in ms:
 
 plt.xlabel('time (ns)')
 plt.tight_layout()
-plt.show()
+if hasattr(__main__, '__file__') is False:
+    plt.show()
 
 # fit_par, t_rabi = cal_rabi_t(datfile, p0=p0)
 # fit_rabi = Rabi(np.array(x), fit_par[0],fit_par[1],fit_par[2],fit_par[3],fit_par[4])

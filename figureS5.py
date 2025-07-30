@@ -6,6 +6,8 @@ Created on Tue Jul 25 17:45:40 2023
 """
 
 # %% Imports
+
+import __main__
 from utils.settings import *
 from utils.budapest_tools import *
 from utils.delft_tools import *
@@ -39,6 +41,9 @@ ax.set_ylabel(r'$A$ (mV)')
 ax.legend()
 plt.savefig(os.path.join(save_path, 'FigureS5.pdf'),
             dpi=300, transparent=True)
+
+if hasattr(__main__, '__file__') is False:
+    plt.show()
 
 print(f'A(f_Q1)={Amplitude(fq1):.1f}')
 print(f'A(f_Q1_)={Amplitude(fq1_):.1f}')

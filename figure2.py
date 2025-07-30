@@ -7,6 +7,7 @@ Created on Wed Jul 13 08:22:42 2022
 
 # %% Imports
 
+import __main__
 from utils.settings import *
 from utils.delft_tools import *
 from utils.budapest_tools import *
@@ -17,9 +18,11 @@ save_path = get_save_path('Figure2')
 # %% Load data
 show_Rabi = True  # 3 different bichromatic Rabi drives with indication on color plot
 
+print('Loading this file takes a long time, please be patient...')
 start_time = '2022-07-12\\17-59-02'
 datfile = load_dat(start_time)
 
+print('Loading this file takes a long time, please be patient...')
 start_time2 = '2022-07-13\\17-27-20'
 datfile2 = load_dat(start_time2)
 
@@ -505,7 +508,8 @@ plt.subplots_adjust(left=0.1,
                     wspace=0.3)
 plt.savefig(os.path.join(save_path, 'figure2_plots.png'), dpi=300)
 plt.savefig(os.path.join(save_path, 'figure2_plots.pdf'), dpi=300)
-plt.show()
+if hasattr(__main__, '__file__') is False:
+    plt.show()
 
 
 # %%
@@ -535,7 +539,8 @@ ax.xaxis.set_label_position('top')
 plt.tight_layout()
 plt.savefig(os.path.join(save_path, 'figure2_cbar.pdf'),
             dpi=300, transparent=True)
-plt.show()
+if hasattr(__main__, '__file__') is False:
+    plt.show()
 
 
 # %% Plotting Rabi drives in seperate plot
@@ -584,4 +589,5 @@ if save:
     plt.savefig(os.path.join(save_path, 'figure2b.pdf'),
                 dpi=300, transparent=True)
 fig.tight_layout()
-plt.show()
+if hasattr(__main__, '__file__') is False:
+    plt.show()
