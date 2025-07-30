@@ -1,0 +1,6 @@
+[project]
+name = "bichromatic-driving-analysis"
+version = "0.1.0"
+description = "Reproducible code for my scientific paper"
+authors = [{name = "Valentin John", email = "v.john@tudelft.nl"}]
+requires-python = "==3.10.*"
