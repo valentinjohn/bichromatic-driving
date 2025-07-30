@@ -618,13 +618,13 @@ for start_time_rabi in start_time_rabi_q2sum_list:
         ax4.set_title(title_ax3)
     m = m + 1
 
-axes["Q1_dif"].get_shared_y_axes().join(axes["Q1_dif"], axes["Q1_dif_sim"])
+axes["Q1_dif_sim"].sharey(axes["Q1_dif"])
 axes["Q1_dif_sim"].set_yticklabels([])
 
-axes["Q2_dif"].get_shared_y_axes().join(axes["Q2_dif"], axes["Q2_dif_sim"])
+axes["Q2_dif_sim"].sharey(axes["Q2_dif"])
 axes["Q2_dif_sim"].set_yticklabels([])
 
-axes["Q2_sum"].get_shared_y_axes().join(axes["Q2_sum"], axes["Q2_sum_sim"])
+axes["Q2_sum_sim"].sharey(axes["Q2_sum"])
 axes["Q2_sum_sim"].set_yticklabels([])
 
 fig.tight_layout()
