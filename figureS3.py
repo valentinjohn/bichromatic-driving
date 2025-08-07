@@ -7,8 +7,6 @@ Created on Tue Sep 20 09:01:25 2022
 
 # %% Imports
 
-import __main__
-import numpy as np
 from utils.settings import *
 from utils.delft_tools import *
 from config import FIGURE_DIR
@@ -224,5 +222,4 @@ plt.tight_layout()
 plt.savefig(os.path.join(save_path, 'FigureS3_exchange.pdf'), dpi=300)
 plt.savefig(os.path.join(save_path, 'FigureS3_exchange.png'), dpi=300)
 
-if hasattr(__main__, '__file__') is False:
-    plt.show()
+plt.show()

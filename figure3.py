@@ -7,7 +7,6 @@ Created on Mon Jul 11 10:59:25 2022
 
 # %% Imports
 
-import __main__
 from utils.settings import *
 from utils.delft_tools import *
 from utils.budapest_tools import *
@@ -338,5 +337,4 @@ plt.tight_layout()
 
 plt.savefig(os.path.join(save_path, 'figure3_cbar.pdf'),
             dpi=300, transparent=True)
-if hasattr(__main__, '__file__') is False:
-    plt.show()
+plt.show()

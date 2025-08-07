@@ -7,7 +7,6 @@ Created on Thu Sep 22 15:50:38 2022
 """
 
 # %% Imports
-import __main__
 from utils.settings import *
 from utils.delft_tools import *
 from config import FIGURE_DIR
@@ -123,5 +122,4 @@ plt.tight_layout()
 plt.savefig(os.path.join(save_path, 'figure1_csd.png'), dpi=300)
 plt.savefig(os.path.join(save_path, 'figure1_csd.pdf'), dpi=300)
 
-if hasattr(__main__, '__file__') is False:
-    plt.show()
+plt.show()

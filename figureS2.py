@@ -7,7 +7,6 @@ Created on Wed Jul 13 08:22:42 2022
 
 # %% Imports
 
-import __main__
 from utils.settings import *
 from utils.delft_tools import *
 from config import FIGURE_DIR
@@ -89,8 +88,7 @@ cbar.ax.set_yticks([0, 0.2, 0.4, 0.6])
 
 fig.tight_layout()
 
-plt.savefig(save_path+'\\FigureS2.png', dpi=300)
-plt.savefig(save_path+'\\FigureS2.pdf', dpi=300)
+plt.savefig(save_path / 'FigureS2.png', dpi=300)
+plt.savefig(save_path / 'FigureS2.pdf', dpi=300)
 
-if hasattr(__main__, '__file__') is False:
-    plt.show()
+plt.show()

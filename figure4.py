@@ -7,7 +7,6 @@ Created on Thu Sep  1 08:55:11 2022
 
 # %% Imports
 
-import __main__
 from utils.settings import *
 from utils.delft_tools import *
 from utils.budapest_tools import *
@@ -354,8 +353,7 @@ plt.subplots_adjust(left=0.25,
                     hspace=0)
 
 plt.tight_layout(w_pad=-0.5)
-if hasattr(__main__, '__file__') is False:
-    plt.show()
+plt.show()
 
 # fig.savefig(os.path.join(save_path, 'Figure4_overlayed.pdf'),
 #             format='pdf', dpi=300, bbox_inches="tight")

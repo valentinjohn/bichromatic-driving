@@ -7,7 +7,6 @@ Created on Wed Jul 13 08:22:42 2022
 
 # %% Imports
 
-import __main__
 from utils.settings import *
 from utils.delft_tools import *
 from utils.budapest_tools import *
@@ -594,5 +593,4 @@ if save:
     plt.savefig(os.path.join(save_path, 'figure2b.pdf'),
                 dpi=300, transparent=True)
 fig.tight_layout()
-if hasattr(__main__, '__file__') is False:
-    plt.show()
+plt.show()

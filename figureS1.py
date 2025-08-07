@@ -7,7 +7,6 @@ Created on Thu Sep 22 11:27:48 2022
 
 # %% Imports
 
-import __main__
 from utils.settings import *
 from utils.delft_tools import *
 from config import FIGURE_DIR
@@ -236,8 +235,7 @@ for m in ms:
 
 plt.xlabel('time (ns)')
 plt.tight_layout()
-if hasattr(__main__, '__file__') is False:
-    plt.show()
+plt.show()
 
 # fit_par, t_rabi = cal_rabi_t(datfile, p0=p0)
 # fit_rabi = Rabi(np.array(x), fit_par[0],fit_par[1],fit_par[2],fit_par[3],fit_par[4])
